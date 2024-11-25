@@ -1,6 +1,7 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import {ROUTES} from '@constants';
+import CustomBottomTabBar from '@components/customBottomTabBar';
 import Favourites from '@screens/favourites/Favourites';
 
 import HomeStackScreen from './HomeStackScreen';
@@ -11,6 +12,7 @@ const BottomTabNavigator = () => {
 
   return (
     <Tab.Navigator
+      tabBar={props => <CustomBottomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
       }}>
