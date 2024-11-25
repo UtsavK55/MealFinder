@@ -16,3 +16,9 @@ export const ROUTES = {
     MEAL_PLANNER_SCREEN: 'MEAL_PLANNER_SCREEN',
   },
 } as const;
+
+export const bottomTabLabels: {[key: string]: string} = {
+  HOME: 'Home',
+  MEAL_PLANNER: 'Meal Plan',
+  FAVOURITES: 'Favorites',
+};
