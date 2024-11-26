@@ -9,6 +9,7 @@ export const recipeCardStyles = createThemedStyles((colors, scalingMetrics) => {
     cardContainer: {
       height: wp(60),
       marginHorizontal: scaleSize(10),
+      marginBottom: scaleSize(30),
       backgroundColor: colors.gray50,
       borderRadius: scaleSize(10),
       width: wp(60),

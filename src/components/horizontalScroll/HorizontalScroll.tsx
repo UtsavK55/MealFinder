@@ -6,13 +6,7 @@ import RecipeCard from '@components/recipeCard';
 
 import {horizontalScrollStyles} from './styles';
 
-const HorizontalScroll = ({
-  sectionTitle,
-  data,
-}: {
-  sectionTitle: string;
-  data: AllRecipeCards;
-}) => {
+const HorizontalScroll = ({sectionTitle, data}: HorizontalScrollProps) => {
   const styles = horizontalScrollStyles();
   return (
     <View style={styles.container}>

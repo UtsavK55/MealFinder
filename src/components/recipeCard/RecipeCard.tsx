@@ -11,6 +11,12 @@ import {recipeCardStyles} from './styles';
 const RecipeCard = ({item}: {item: RecipeCard}) => {
   const styles = recipeCardStyles();
   const colors = useThemeColors();
+  
+  const isVegStyles = [
+    styles.info,
+    {color: item?.vegetarian ? colors.green600 : colors.red500},
+  ];
+
   return (
     <Pressable style={styles.cardContainer}>
       <FastImage
@@ -32,13 +38,7 @@ const RecipeCard = ({item}: {item: RecipeCard}) => {
             style={layout.flex_1}
           />
         </View>
-        <Text
-          style={[
-            styles.info,
-            {color: item?.vegetarian ? colors.green600 : colors.red500},
-          ]}>
-          {item?.vegetarian ? 'Veg' : 'Non-Veg'}
-        </Text>
+        <Text style={isVegStyles}>{item?.vegetarian ? 'Veg' : 'Non-Veg'}</Text>
       </View>
     </Pressable>
   );
