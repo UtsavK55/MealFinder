@@ -1,6 +1,5 @@
 import {useMemo} from 'react';
 import {Platform} from 'react-native';
-import {SharedTransition, withSpring} from 'react-native-reanimated';
 
 import useScalingMetrics from '@hooks/useScalingMetrics';
 import {useThemeColors} from '@theme/index';
@@ -29,4 +28,3 @@ export const truncateText = (text: string, maxLength: number): string => {
 export const appendAuthParams = (url: string): string => {
   return `${url}&apiKey=${API_KEY}`;
 };
-
