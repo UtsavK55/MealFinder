@@ -33,7 +33,6 @@ const Home = () => {
       if (selectedDiet) {
         url += `&diet=${selectedDiet}`;
       }
-      console.log(url);
       const data = await fetchData(url);
 
       const recipeData = data?.recipes?.map(
@@ -44,7 +43,6 @@ const Home = () => {
           vegetarian,
         }),
       );
-      console.log(recipeData);
 
       if (type === randomRecipeTypes[0]) {
         setAppetizers(recipeData);
