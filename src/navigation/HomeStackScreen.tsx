@@ -12,8 +12,9 @@ import Home from '@screens/home/Home';
 import MealDetails from '@screens/mealDetails/MealDetails';
 import Search from '@screens/search/Search';
 
+const HomeStack = createNativeStackNavigator<HomeScreenParamList>();
+
 const HomeStackScreen = () => {
-  const HomeStack = createNativeStackNavigator<HomeScreenParamList>();
   const tabNavigation = useNavigation<BottomTabNavigationType>();
   const route = useRoute<RouteProp<HomeScreenParamList>>();
 
@@ -49,6 +50,7 @@ const HomeStackScreen = () => {
       <HomeStack.Screen
         name={ROUTES.HOME_STACK_SCREEN.SEARCH_SCREEN}
         component={Search}
+        options={{animation: 'fade_from_bottom'}}
       />
     </HomeStack.Navigator>
   );
