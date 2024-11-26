@@ -25,6 +25,7 @@ declare global {
     orange600: string;
     orange500: string;
     orange400: string;
+    green600: string;
     transparent: string;
   }
 

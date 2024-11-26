@@ -19,3 +19,7 @@ export const createThemedStyles = <T extends NamedStyles<T> | NamedStyles<any>>(
     );
   };
 };
+
+export const truncateText = (text: string, maxLength: number): string => {
+  return text?.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+};
