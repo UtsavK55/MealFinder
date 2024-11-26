@@ -30,7 +30,7 @@ const RecipeCard = ({item}: {item: RecipeCard}) => {
       />
       <View style={styles.bottomContainer}>
         <View style={styles.infoContainer}>
-          <Text style={styles.title}>{truncateText(item?.title, 35)}</Text>
+          <Text style={styles.title}>{truncateText(item?.title, 30)}</Text>
           <Icon
             name="heart"
             size={28}
