@@ -7,7 +7,6 @@ export const horizontalScrollStyles = createThemedStyles(
     const {scaleSize, moderateScale} = scalingMetrics;
     return StyleSheet.create({
       container: {
-        // marginVertical: scaleSize(30),
         flex: 1,
       },
       sectionTitle: {
