@@ -23,6 +23,7 @@ export const useThemeColors = () => {
     orange600: '#fa8900',
     orange500: '#ffa30a',
     orange400: '#ffbb32',
+    green600: '#158016',
     transparent: 'rgba(0, 0, 0, 0.5)',
   } as const;
 
@@ -44,6 +45,7 @@ export const useThemeColors = () => {
     orange600: '#ffbb32',
     orange500: '#ffa30a',
     orange400: '#fa8900',
+    green600: '#158016',
     transparent: 'rgba(0, 0, 0, 0.5)',
   } as const;
 
