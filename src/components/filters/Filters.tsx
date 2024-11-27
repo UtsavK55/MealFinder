@@ -1,6 +1,7 @@
-import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, Switch, Text, TouchableOpacity, View} from 'react-native';
 
 import {cuisines, diets} from '@constants';
+import {useThemeColors} from '@theme';
 
 import {filterStyles} from './styles';
 
@@ -11,6 +12,9 @@ const FilterSection = ({
   onSelectOption,
 }: FilterSectionProps) => {
   const styles = filterStyles();
+
+  const toFistLetterUpperCase = (value: string) =>
+    value.charAt(0).toUpperCase() + value.slice(1);
 
   return (
     <>
@@ -29,7 +33,7 @@ const FilterSection = ({
                 styles.filterText,
                 selectedOption === option && styles.selectedText,
               ]}>
-              {option}
+              {toFistLetterUpperCase(option)}
             </Text>
           </TouchableOpacity>
         ))}
@@ -41,13 +45,24 @@ const FilterSection = ({
 const Filters: React.FC<FiltersProps> = ({
   selectedCuisine,
   selectedDiet,
+  isVegetarian,
   onSelectCuisine,
   onSelectDiet,
+  onToggleVegetarian,
 }) => {
   const styles = filterStyles();
-
+  const colors = useThemeColors();
   return (
     <View style={styles.container}>
+      <View style={styles.vegetarianContainer}>
+        <Text style={styles.vegetarianText}>Pure Vegetarian</Text>
+        <Switch
+          value={isVegetarian}
+          onValueChange={onToggleVegetarian}
+          trackColor={{false: colors.gray300, true: colors.orange600}}
+          thumbColor={isVegetarian ? colors.white : colors.gray50}
+        />
+      </View>
       <FilterSection
         title="Cuisines"
         options={cuisines}

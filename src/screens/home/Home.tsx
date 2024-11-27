@@ -23,17 +23,25 @@ const Home = () => {
   const [desserts, setDesserts] = useState<AllRecipeCards>([]);
   const [selectedCuisine, setSelectedCuisine] = useState<string | null>(null);
   const [selectedDiet, setSelectedDiet] = useState<string | null>(null);
+  const [isVegetarian, setIsVegetarian] = useState<boolean>(false);
 
   const getAllData = async () => {
     randomRecipeTypes.map(async type => {
-      let url = randomRecipeUrl(type);
-      if (selectedCuisine) {
-        url += `&cuisine=${selectedCuisine}`;
+      let includeTags = [];
+      let url = randomRecipeUrl;
+      if (isVegetarian) {
+        includeTags.push('vegetarian');
       }
       if (selectedDiet) {
-        url += `&diet=${selectedDiet}`;
+        includeTags.push(selectedDiet);
       }
+      includeTags.push(type);
+      if (selectedCuisine) {
+        includeTags.push(selectedCuisine);
+      }
+      url += `&include-tags=${includeTags.toString()}`;
       const data = await fetchData(url);
+      console.log(url);
 
       const recipeData = data?.recipes?.map(
         ({id, title, image, vegetarian}: RecipeCard) => ({
@@ -56,7 +64,7 @@ const Home = () => {
 
   useEffect(() => {
     getAllData();
-  }, [selectedCuisine, selectedDiet]);
+  }, [selectedCuisine, selectedDiet, isVegetarian]);
 
   const handleSelectCuisine = (cuisine: string) => {
     setSelectedCuisine(prevCuisine =>
@@ -66,6 +74,10 @@ const Home = () => {
 
   const handleSelectDiet = (diet: string) => {
     setSelectedDiet(prevDiet => (prevDiet === diet ? null : diet));
+  };
+
+  const handleToggleVegetarian = () => {
+    setIsVegetarian(!isVegetarian);
   };
 
   const onPressSearch = () =>
@@ -91,8 +103,10 @@ const Home = () => {
           <Filters
             selectedCuisine={selectedCuisine}
             selectedDiet={selectedDiet}
+            isVegetarian={isVegetarian}
             onSelectCuisine={handleSelectCuisine}
             onSelectDiet={handleSelectDiet}
+            onToggleVegetarian={handleToggleVegetarian}
           />
         </View>
         <HorizontalScroll data={appetizers} sectionTitle="Appetizers" />

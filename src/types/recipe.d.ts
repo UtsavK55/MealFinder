@@ -15,8 +15,10 @@ interface HorizontalScrollProps {
 interface FiltersProps {
   selectedCuisine: string | null;
   selectedDiet: string | null;
+  isVegetarian: boolean;
   onSelectCuisine: (cuisine: string) => void;
   onSelectDiet: (diet: string) => void;
+  onToggleVegetarian: (value: boolean) => void;
 }
 
 interface FilterSectionProps {
