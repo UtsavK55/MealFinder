@@ -8,7 +8,7 @@ import {useThemeColors} from '@theme';
 
 import {recipeCardStyles} from './styles';
 
-const RecipeCard = ({item, large}: {item: RecipeCard; large?: boolean}) => {
+const RecipeCard = ({item, large, onPressCard}: RecipeCardProps) => {
   const styles = recipeCardStyles();
   const colors = useThemeColors();
 
@@ -19,6 +19,7 @@ const RecipeCard = ({item, large}: {item: RecipeCard; large?: boolean}) => {
 
   return (
     <Pressable
+      onPress={onPressCard}
       style={[
         styles.cardContainer,
         large ? styles.largeCard : styles.smallCard,

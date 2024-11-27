@@ -36,9 +36,53 @@ const constructUrl = (
   return `${initialUrl}&include-tags=${includeTags.join(',')}`;
 };
 
-const Home = () => {
+const welcomeSection = (onPressSearch: () => void) => {
   const styles = homeStyles();
   const colors = useThemeColors();
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title1}>Welcome</Text>
+      <Text style={styles.title2}>Find your recipe!</Text>
+      <Pressable onPress={onPressSearch} style={styles.searchContainer}>
+        <Text style={styles.searchPlaceholder}>
+          Search by recipe or ingredient
+        </Text>
+        <Icon
+          name="search"
+          size={24}
+          color={colors.white}
+          style={styles.searchIcon}
+        />
+      </Pressable>
+    </View>
+  );
+};
+
+const recipeListSection = ({
+  appetizers,
+  mainCourse,
+  desserts,
+}: RecipeListSectionProps) => {
+  return (
+    <>
+      <HorizontalScroll
+        data={appetizers}
+        sectionTitle={toFistLetterUpperCase(randomRecipeTypes[0])}
+      />
+      <HorizontalScroll
+        data={mainCourse}
+        sectionTitle={toFistLetterUpperCase(randomRecipeTypes[1])}
+      />
+      <HorizontalScroll
+        data={desserts}
+        sectionTitle={toFistLetterUpperCase(randomRecipeTypes[2])}
+      />
+    </>
+  );
+};
+
+const Home = () => {
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
 
   const [appetizers, setAppetizers] = useState<AllRecipeCards>([]);
@@ -103,21 +147,7 @@ const Home = () => {
 
   return (
     <BaseContainer>
-      <View style={styles.container}>
-        <Text style={styles.title1}>Welcome</Text>
-        <Text style={styles.title2}>Find your recipe!</Text>
-        <Pressable onPress={onPressSearch} style={styles.searchContainer}>
-          <Text style={styles.searchPlaceholder}>
-            Search by recipe or ingredient
-          </Text>
-          <Icon
-            name="search"
-            size={24}
-            color={colors.white}
-            style={styles.searchIcon}
-          />
-        </Pressable>
-      </View>
+      {welcomeSection(onPressSearch)}
       <ScrollView>
         <Filters
           selectedCuisine={selectedCuisine}
@@ -127,18 +157,7 @@ const Home = () => {
           onSelectDiet={handleSelectDiet}
           onToggleVegetarian={handleToggleVegetarian}
         />
-        <HorizontalScroll
-          data={appetizers}
-          sectionTitle={toFistLetterUpperCase(randomRecipeTypes[0])}
-        />
-        <HorizontalScroll
-          data={mainCourse}
-          sectionTitle={toFistLetterUpperCase(randomRecipeTypes[1])}
-        />
-        <HorizontalScroll
-          data={desserts}
-          sectionTitle={toFistLetterUpperCase(randomRecipeTypes[2])}
-        />
+        {recipeListSection({appetizers, mainCourse, desserts})}
       </ScrollView>
     </BaseContainer>
   );

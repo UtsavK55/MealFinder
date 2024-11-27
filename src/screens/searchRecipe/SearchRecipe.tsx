@@ -22,6 +22,7 @@ const SearchRecipe = () => {
   const colors = useThemeColors();
   const styles = searchStyles();
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
+  const mealNavigation = useNavigation<MealPlannerScreenNavigationType>();
   const bottomtabNavigation = useNavigation<BottomTabNavigationType>();
   const route =
     useRoute<RouteProp<HomeScreenParamList, 'SEARCH_RECIPE_SCREEN'>>();
@@ -31,30 +32,35 @@ const SearchRecipe = () => {
   const [randomRecipes, setRandomRecipes] = useState<AllRecipeCards>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
+  const fetchRandomRecipes = async () => {
+    const randomdata = await fetchData(randomRecipeUrl);
+    const randomRecipeData = randomdata?.recipes?.map(
+      ({id, title, image}: RecipeCard) => ({
+        id,
+        title,
+        image,
+      }),
+    );
+    setRandomRecipes(randomRecipeData);
+  };
+
+  const fetchSearchedRecipes = async () => {
+    const searchData = await fetchData(searchRecipeUrl(searchTerm, 10));
+    const searchRecipeData = searchData?.results?.map(
+      ({id, title, image}: RecipeCard) => ({
+        id,
+        title,
+        image,
+      }),
+    );
+    setSearchedRecipes(searchRecipeData);
+  };
+
   const getAllData = async () => {
     if (searchTerm.length === 0) {
-      const randomdata = await fetchData(randomRecipeUrl);
-
-      const randomRecipeData = randomdata?.recipes?.map(
-        ({id, title, image}: RecipeCard) => ({
-          id,
-          title,
-          image,
-        }),
-      );
-
-      setRandomRecipes(randomRecipeData);
+      await fetchRandomRecipes();
     } else {
-      const searchData = await fetchData(searchRecipeUrl(searchTerm, 10));
-
-      const searchRecipeData = searchData?.results?.map(
-        ({id, title, image}: RecipeCard) => ({
-          id,
-          title,
-          image,
-        }),
-      );
-      setSearchedRecipes(searchRecipeData);
+      await fetchSearchedRecipes();
     }
   };
 
@@ -71,6 +77,16 @@ const SearchRecipe = () => {
           routes: [{name: ROUTES.BOTTOM_TAB.MEAL_PLANNER}],
         }),
       );
+    }
+  };
+
+  const onPressCard = () => {
+    if (fromScreen === ROUTES.HOME_STACK_SCREEN.HOME_SCREEN) {
+      homeNavigation.navigate(ROUTES.HOME_STACK_SCREEN.DETAILS_SCREEN);
+    } else {
+      mealNavigation.navigate(ROUTES.BOTTOM_TAB.MEAL_PLANNER, {
+        screen: ROUTES.MEAL_PLANNER__STACK_SCREEN.SERVING_SCREEN,
+      });
     }
   };
 
@@ -96,7 +112,9 @@ const SearchRecipe = () => {
       </View>
       <FlatList
         data={searchTerm.length === 0 ? randomRecipes : searchedRecipes}
-        renderItem={({item}) => <RecipeCard item={item} />}
+        renderItem={({item}) => (
+          <RecipeCard item={item} onPressCard={onPressCard} />
+        )}
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={styles.recipeList}
         showsVerticalScrollIndicator={false}

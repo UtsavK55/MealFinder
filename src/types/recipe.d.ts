@@ -27,3 +27,15 @@ interface FilterSectionProps {
   selectedOption: string | null;
   onSelectOption: (option: string) => void;
 }
+
+interface RecipeCardProps {
+  item: RecipeCard;
+  large?: boolean;
+  onPressCard?: () => void;
+}
+
+interface RecipeListSectionProps {
+  appetizers: AllRecipeCards;
+  mainCourse: AllRecipeCards;
+  desserts: AllRecipeCards;
+}
