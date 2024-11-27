@@ -31,3 +31,10 @@ export const appendAuthParams = (url: string): string => {
 
 export const toFistLetterUpperCase = (value: string) =>
   value.charAt(0).toUpperCase() + value.slice(1);
+
+export const formatDate = (date: Date) => {
+  if (date instanceof Date && !isNaN(date.getTime())) {
+    return date.toISOString().split('T')[0];
+  }
+  return ''; // Return an empty string if the date is invalid
+};
