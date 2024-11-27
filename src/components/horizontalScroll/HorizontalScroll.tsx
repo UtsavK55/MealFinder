@@ -10,10 +10,10 @@ const HorizontalScroll = ({sectionTitle, data}: HorizontalScrollProps) => {
   const styles = horizontalScrollStyles();
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>{sectionTitle}</Text>
+      {sectionTitle && <Text style={styles.sectionTitle}>{sectionTitle}</Text>}
       <FlatList
         data={data}
-        renderItem={({item}) => <RecipeCard item={item} />}
+        renderItem={({item}) => <RecipeCard item={item} large />}
         keyExtractor={({id}) => id.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}

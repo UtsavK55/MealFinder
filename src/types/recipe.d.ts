@@ -2,13 +2,13 @@ interface RecipeCard {
   id: number;
   title: string;
   image: string;
-  vegetarian: boolean;
+  vegetarian?: boolean;
 }
 
 type AllRecipeCards = RecipeCard[];
 
 interface HorizontalScrollProps {
-  sectionTitle: string;
+  sectionTitle?: string;
   data: AllRecipeCards;
 }
 
@@ -26,4 +26,16 @@ interface FilterSectionProps {
   options: string[];
   selectedOption: string | null;
   onSelectOption: (option: string) => void;
+}
+
+interface RecipeCardProps {
+  item: RecipeCard;
+  large?: boolean;
+  onPressCard?: () => void;
+}
+
+interface RecipeListSectionProps {
+  appetizers: AllRecipeCards;
+  mainCourse: AllRecipeCards;
+  desserts: AllRecipeCards;
 }
