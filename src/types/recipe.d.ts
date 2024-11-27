@@ -2,13 +2,13 @@ interface RecipeCard {
   id: number;
   title: string;
   image: string;
-  vegetarian: boolean;
+  vegetarian?: boolean;
 }
 
 type AllRecipeCards = RecipeCard[];
 
 interface HorizontalScrollProps {
-  sectionTitle: string;
+  sectionTitle?: string;
   data: AllRecipeCards;
 }
 

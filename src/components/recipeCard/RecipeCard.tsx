@@ -4,41 +4,44 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import {IMAGES} from '@constants/imageConstants';
 import {truncateText} from '@helpers';
-import {layout, useThemeColors} from '@theme';
+import {useThemeColors} from '@theme';
 
 import {recipeCardStyles} from './styles';
 
-const RecipeCard = ({item}: {item: RecipeCard}) => {
+const RecipeCard = ({item, large}: {item: RecipeCard; large?: boolean}) => {
   const styles = recipeCardStyles();
   const colors = useThemeColors();
-  
+
   const isVegStyles = [
     styles.info,
     {color: item?.vegetarian ? colors.green600 : colors.red500},
   ];
 
   return (
-    <Pressable style={styles.cardContainer}>
+    <Pressable
+      style={[
+        styles.cardContainer,
+        large ? styles.largeCard : styles.smallCard,
+      ]}>
       <FastImage
         source={{
           uri: item?.image,
           priority: FastImage.priority.high,
         }}
-        resizeMode="contain"
+        resizeMode="cover"
         defaultSource={IMAGES.logoImg1}
         style={styles.image}
       />
+      <Pressable style={styles.icon}>
+        <Icon name="heart" size={24} color={colors.red500} />
+      </Pressable>
       <View style={styles.bottomContainer}>
-        <View style={styles.infoContainer}>
-          <Text style={styles.title}>{truncateText(item?.title, 30)}</Text>
-          <Icon
-            name="heart"
-            size={28}
-            color={colors.orange600}
-            style={layout.flex_1}
-          />
-        </View>
-        <Text style={isVegStyles}>{item?.vegetarian ? 'Veg' : 'Non-Veg'}</Text>
+        <Text style={styles.title}>{truncateText(item?.title, 30)}</Text>
+        {large && (
+          <Text style={isVegStyles}>
+            {item?.vegetarian ? 'Veg' : 'Non-Veg'}
+          </Text>
+        )}
       </View>
     </Pressable>
   );

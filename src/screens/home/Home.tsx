@@ -97,34 +97,36 @@ const Home = () => {
   };
 
   const onPressSearch = () =>
-    homeNavigation.navigate(ROUTES.HOME_STACK_SCREEN.SEARCH_SCREEN);
+    homeNavigation.navigate(ROUTES.HOME_STACK_SCREEN.SEARCH_RECIPE_SCREEN, {
+      fromScreen: ROUTES.HOME_STACK_SCREEN.HOME_SCREEN,
+    });
 
   return (
     <BaseContainer>
-      <ScrollView>
-        <View style={styles.container}>
-          <Text style={styles.title1}>Welcome</Text>
-          <Text style={styles.title2}>Find your recipe!</Text>
-          <Pressable onPress={onPressSearch} style={styles.searchContainer}>
-            <Text style={styles.searchPlaceholder}>
-              Search by recipe or ingredient
-            </Text>
-            <Icon
-              name="search"
-              size={24}
-              color={colors.white}
-              style={styles.searchIcon}
-            />
-          </Pressable>
-          <Filters
-            selectedCuisine={selectedCuisine}
-            selectedDiet={selectedDiet}
-            isVegetarian={isVegetarian}
-            onSelectCuisine={handleSelectCuisine}
-            onSelectDiet={handleSelectDiet}
-            onToggleVegetarian={handleToggleVegetarian}
+      <View style={styles.container}>
+        <Text style={styles.title1}>Welcome</Text>
+        <Text style={styles.title2}>Find your recipe!</Text>
+        <Pressable onPress={onPressSearch} style={styles.searchContainer}>
+          <Text style={styles.searchPlaceholder}>
+            Search by recipe or ingredient
+          </Text>
+          <Icon
+            name="search"
+            size={24}
+            color={colors.white}
+            style={styles.searchIcon}
           />
-        </View>
+        </Pressable>
+      </View>
+      <ScrollView>
+        <Filters
+          selectedCuisine={selectedCuisine}
+          selectedDiet={selectedDiet}
+          isVegetarian={isVegetarian}
+          onSelectCuisine={handleSelectCuisine}
+          onSelectDiet={handleSelectDiet}
+          onToggleVegetarian={handleToggleVegetarian}
+        />
         <HorizontalScroll
           data={appetizers}
           sectionTitle={toFistLetterUpperCase(randomRecipeTypes[0])}

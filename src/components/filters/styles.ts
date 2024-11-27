@@ -4,11 +4,10 @@ export const filterStyles = createThemedStyles((colors, scalingMetrics) => {
   const {scaleSize, moderateScale} = scalingMetrics;
   return {
     container: {
-      marginTop: scaleSize(20),
       paddingHorizontal: scaleSize(20),
     },
     title: {
-      fontSize: moderateScale(18),
+      fontSize: moderateScale(16),
       fontWeight: 'bold',
       marginBottom: scaleSize(10),
       color: colors.black,
