@@ -31,5 +31,16 @@ export const filterStyles = createThemedStyles((colors, scalingMetrics) => {
     selectedText: {
       color: colors.white,
     },
+    vegetarianContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: scaleSize(20),
+    },
+    vegetarianText: {
+      fontSize: moderateScale(16),
+      fontWeight: 'bold',
+      color: colors.black,
+    },
   };
 });

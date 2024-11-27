@@ -7,11 +7,34 @@ import BaseContainer from '@components/baseContainer';
 import Filters from '@components/filters';
 import HorizontalScroll from '@components/horizontalScroll';
 import {randomRecipeTypes, ROUTES} from '@constants';
+import {toFistLetterUpperCase} from '@helpers';
 import {fetchData} from '@network/apiMethods';
 import {randomRecipeUrl} from '@network/apiUrl';
 import {useThemeColors} from '@theme';
 
 import {homeStyles} from './styles';
+
+const constructUrl = (
+  initialUrl: string,
+  isVegetarian: boolean,
+  selectedDiet: string | null,
+  selectedCuisine: string | null,
+  type: string,
+) => {
+  let includeTags = [];
+
+  if (isVegetarian) {
+    includeTags.push('vegetarian');
+  }
+  if (selectedDiet) {
+    includeTags.push(selectedDiet);
+  }
+  includeTags.push(type);
+  if (selectedCuisine) {
+    includeTags.push(selectedCuisine);
+  }
+  return `${initialUrl}&include-tags=${includeTags.join(',')}`;
+};
 
 const Home = () => {
   const styles = homeStyles();
@@ -23,16 +46,17 @@ const Home = () => {
   const [desserts, setDesserts] = useState<AllRecipeCards>([]);
   const [selectedCuisine, setSelectedCuisine] = useState<string | null>(null);
   const [selectedDiet, setSelectedDiet] = useState<string | null>(null);
+  const [isVegetarian, setIsVegetarian] = useState<boolean>(false);
 
   const getAllData = async () => {
     randomRecipeTypes.map(async type => {
-      let url = randomRecipeUrl(type);
-      if (selectedCuisine) {
-        url += `&cuisine=${selectedCuisine}`;
-      }
-      if (selectedDiet) {
-        url += `&diet=${selectedDiet}`;
-      }
+      const url = constructUrl(
+        randomRecipeUrl,
+        isVegetarian,
+        selectedDiet,
+        selectedCuisine,
+        type,
+      );
       const data = await fetchData(url);
 
       const recipeData = data?.recipes?.map(
@@ -56,7 +80,7 @@ const Home = () => {
 
   useEffect(() => {
     getAllData();
-  }, [selectedCuisine, selectedDiet]);
+  }, [selectedCuisine, selectedDiet, isVegetarian]);
 
   const handleSelectCuisine = (cuisine: string) => {
     setSelectedCuisine(prevCuisine =>
@@ -66,6 +90,10 @@ const Home = () => {
 
   const handleSelectDiet = (diet: string) => {
     setSelectedDiet(prevDiet => (prevDiet === diet ? null : diet));
+  };
+
+  const handleToggleVegetarian = () => {
+    setIsVegetarian(!isVegetarian);
   };
 
   const onPressSearch = () =>
@@ -91,13 +119,24 @@ const Home = () => {
           <Filters
             selectedCuisine={selectedCuisine}
             selectedDiet={selectedDiet}
+            isVegetarian={isVegetarian}
             onSelectCuisine={handleSelectCuisine}
             onSelectDiet={handleSelectDiet}
+            onToggleVegetarian={handleToggleVegetarian}
           />
         </View>
-        <HorizontalScroll data={appetizers} sectionTitle="Appetizers" />
-        <HorizontalScroll data={mainCourse} sectionTitle="Main Course" />
-        <HorizontalScroll data={desserts} sectionTitle="Desserts" />
+        <HorizontalScroll
+          data={appetizers}
+          sectionTitle={toFistLetterUpperCase(randomRecipeTypes[0])}
+        />
+        <HorizontalScroll
+          data={mainCourse}
+          sectionTitle={toFistLetterUpperCase(randomRecipeTypes[1])}
+        />
+        <HorizontalScroll
+          data={desserts}
+          sectionTitle={toFistLetterUpperCase(randomRecipeTypes[2])}
+        />
       </ScrollView>
     </BaseContainer>
   );

@@ -28,3 +28,6 @@ export const truncateText = (text: string, maxLength: number): string => {
 export const appendAuthParams = (url: string): string => {
   return `${url}&apiKey=${API_KEY}`;
 };
+
+export const toFistLetterUpperCase = (value: string) =>
+  value.charAt(0).toUpperCase() + value.slice(1);
