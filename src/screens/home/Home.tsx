@@ -7,11 +7,34 @@ import BaseContainer from '@components/baseContainer';
 import Filters from '@components/filters';
 import HorizontalScroll from '@components/horizontalScroll';
 import {randomRecipeTypes, ROUTES} from '@constants';
+import {toFistLetterUpperCase} from '@helpers';
 import {fetchData} from '@network/apiMethods';
 import {randomRecipeUrl} from '@network/apiUrl';
 import {useThemeColors} from '@theme';
 
 import {homeStyles} from './styles';
+
+const constructUrl = (
+  initialUrl: string,
+  isVegetarian: boolean,
+  selectedDiet: string | null,
+  selectedCuisine: string | null,
+  type: string,
+) => {
+  let includeTags = [];
+
+  if (isVegetarian) {
+    includeTags.push('vegetarian');
+  }
+  if (selectedDiet) {
+    includeTags.push(selectedDiet);
+  }
+  includeTags.push(type);
+  if (selectedCuisine) {
+    includeTags.push(selectedCuisine);
+  }
+  return `${initialUrl}&include-tags=${includeTags.join(',')}`;
+};
 
 const Home = () => {
   const styles = homeStyles();
@@ -27,21 +50,14 @@ const Home = () => {
 
   const getAllData = async () => {
     randomRecipeTypes.map(async type => {
-      let includeTags = [];
-      let url = randomRecipeUrl;
-      if (isVegetarian) {
-        includeTags.push('vegetarian');
-      }
-      if (selectedDiet) {
-        includeTags.push(selectedDiet);
-      }
-      includeTags.push(type);
-      if (selectedCuisine) {
-        includeTags.push(selectedCuisine);
-      }
-      url += `&include-tags=${includeTags.toString()}`;
+      const url = constructUrl(
+        randomRecipeUrl,
+        isVegetarian,
+        selectedDiet,
+        selectedCuisine,
+        type,
+      );
       const data = await fetchData(url);
-      console.log(url);
 
       const recipeData = data?.recipes?.map(
         ({id, title, image, vegetarian}: RecipeCard) => ({
@@ -109,9 +125,18 @@ const Home = () => {
             onToggleVegetarian={handleToggleVegetarian}
           />
         </View>
-        <HorizontalScroll data={appetizers} sectionTitle="Appetizers" />
-        <HorizontalScroll data={mainCourse} sectionTitle="Main Course" />
-        <HorizontalScroll data={desserts} sectionTitle="Desserts" />
+        <HorizontalScroll
+          data={appetizers}
+          sectionTitle={toFistLetterUpperCase(randomRecipeTypes[0])}
+        />
+        <HorizontalScroll
+          data={mainCourse}
+          sectionTitle={toFistLetterUpperCase(randomRecipeTypes[1])}
+        />
+        <HorizontalScroll
+          data={desserts}
+          sectionTitle={toFistLetterUpperCase(randomRecipeTypes[2])}
+        />
       </ScrollView>
     </BaseContainer>
   );

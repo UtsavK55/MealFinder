@@ -1,6 +1,7 @@
 import {ScrollView, Switch, Text, TouchableOpacity, View} from 'react-native';
 
 import {cuisines, diets} from '@constants';
+import {toFistLetterUpperCase} from '@helpers';
 import {useThemeColors} from '@theme';
 
 import {filterStyles} from './styles';
@@ -12,9 +13,6 @@ const FilterSection = ({
   onSelectOption,
 }: FilterSectionProps) => {
   const styles = filterStyles();
-
-  const toFistLetterUpperCase = (value: string) =>
-    value.charAt(0).toUpperCase() + value.slice(1);
 
   return (
     <>
