@@ -6,7 +6,7 @@ export const useThemeColors = () => {
   const {isDark} = useThemeContext();
 
   const colorsLight: Colors = {
-    red500: '#C13333',
+    red500: '#FF0000',
     gray800: '#6a6a6a',
     gray600: '#969696',
     gray500: '#aaaaaa',
@@ -28,7 +28,7 @@ export const useThemeColors = () => {
   } as const;
 
   const colorsDark: Colors = {
-    red500: '#C13333',
+    red500: '#FF0000',
     gray800: '#f7f7f7',
     gray600: '#d1d1d1',
     gray500: '#aaaaaa',

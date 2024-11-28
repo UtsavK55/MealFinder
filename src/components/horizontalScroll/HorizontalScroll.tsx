@@ -6,14 +6,18 @@ import RecipeCard from '@components/recipeCard';
 
 import {horizontalScrollStyles} from './styles';
 
-const HorizontalScroll = ({sectionTitle, data}: HorizontalScrollProps) => {
+const HorizontalScroll = ({
+  sectionTitle,
+  data,
+  isLarge,
+}: HorizontalScrollProps) => {
   const styles = horizontalScrollStyles();
   return (
     <View style={styles.container}>
       {sectionTitle && <Text style={styles.sectionTitle}>{sectionTitle}</Text>}
       <FlatList
         data={data}
-        renderItem={({item}) => <RecipeCard item={item} large />}
+        renderItem={({item}) => <RecipeCard item={item} large={isLarge} />}
         keyExtractor={({id}) => id.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}

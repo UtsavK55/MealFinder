@@ -38,3 +38,11 @@ export const formatDate = (date: Date) => {
   }
   return ''; // Return an empty string if the date is invalid
 };
+
+export const removeHtmlTags = (htmlText: string) => {
+  return htmlText.replace(/<[^>]*>/g, '');
+};
+
+export const getValueOrNA = (value: string | number | null) => {
+  return value != null ? value : 'N/A';
+};

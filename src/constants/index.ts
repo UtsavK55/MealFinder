@@ -9,7 +9,7 @@ export const ROUTES = {
   },
   HOME_STACK_SCREEN: {
     HOME_SCREEN: 'HOME_SCREEN',
-    SEARCH_SCREEN: 'SEARCH_SCREEN',
+    SEARCH_RECIPE_SCREEN: 'SEARCH_RECIPE_SCREEN',
     DETAILS_SCREEN: 'DETAILS_SCREEN',
   },
   MEAL_PLANNER__STACK_SCREEN: {
@@ -24,6 +24,11 @@ export const bottomTabLabels: {[key: string]: string} = {
 };
 
 export const randomRecipeTypes = ['appetizer', 'main course', 'dessert'];
+export const mealTypes = [
+  {mealId: 1, mealName: 'Breakfast'},
+  {mealId: 2, mealName: 'Lunch'},
+  {mealId: 3, mealName: 'Dinner'},
+];
 
 export const cuisines = [
   'african',
@@ -66,3 +71,33 @@ export const diets = [
   'primal',
   'whole30',
 ];
+
+export const recipeDetailTabs = ['Information', 'Ingredients', 'Instructions'];
+
+export const emptyRecipeDetail: RecipeDetail = {
+  vegetarian: false,
+  vegan: false,
+  glutenFree: false,
+  dairyFree: false,
+  preparationMinutes: null,
+  cookingMinutes: null,
+  id: 0,
+  title: '',
+  readyInMinutes: 0,
+  servings: 0,
+  image: '',
+  summary: '',
+  instructions: [
+    {
+      number: 0,
+      step: '',
+    },
+  ],
+  extendedIngredients: [
+    {
+      id: 0,
+      image: '',
+      original: '',
+    },
+  ],
+};
