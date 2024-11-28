@@ -10,7 +10,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {ROUTES} from '@constants';
 import Home from '@screens/home/Home';
 import MealDetails from '@screens/mealDetails/MealDetails';
-import Search from '@screens/search/Search';
+import SearchRecipe from '@screens/searchRecipe/SearchRecipe';
 
 const HomeStack = createNativeStackNavigator<HomeScreenParamList>();
 
@@ -24,7 +24,7 @@ const HomeStackScreen = () => {
       ROUTES.HOME_STACK_SCREEN.HOME_SCREEN;
 
     const shouldHideTabBar =
-      routeName === ROUTES.HOME_STACK_SCREEN.SEARCH_SCREEN ||
+      routeName === ROUTES.HOME_STACK_SCREEN.SEARCH_RECIPE_SCREEN ||
       routeName === ROUTES.HOME_STACK_SCREEN.DETAILS_SCREEN;
 
     tabNavigation.setOptions({
@@ -48,8 +48,8 @@ const HomeStackScreen = () => {
         component={MealDetails}
       />
       <HomeStack.Screen
-        name={ROUTES.HOME_STACK_SCREEN.SEARCH_SCREEN}
-        component={Search}
+        name={ROUTES.HOME_STACK_SCREEN.SEARCH_RECIPE_SCREEN}
+        component={SearchRecipe}
         options={{animation: 'fade_from_bottom'}}
       />
     </HomeStack.Navigator>

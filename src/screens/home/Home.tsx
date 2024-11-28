@@ -36,9 +36,55 @@ const constructUrl = (
   return `${initialUrl}&include-tags=${includeTags.join(',')}`;
 };
 
-const Home = () => {
+const welcomeSection = (onPressSearch: () => void) => {
   const styles = homeStyles();
   const colors = useThemeColors();
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title1}>Welcome</Text>
+      <Text style={styles.title2}>Find your recipe!</Text>
+      <Pressable onPress={onPressSearch} style={styles.searchContainer}>
+        <Text style={styles.searchPlaceholder}>
+          Search by recipe or ingredient
+        </Text>
+        <Icon
+          name="search"
+          size={24}
+          color={colors.white}
+          style={styles.searchIcon}
+        />
+      </Pressable>
+    </View>
+  );
+};
+
+const recipeListSection = ({
+  appetizers,
+  mainCourse,
+  desserts,
+}: RecipeListSectionProps) => {
+  const sections = [
+    {data: appetizers, type: randomRecipeTypes[0]},
+    {data: mainCourse, type: randomRecipeTypes[1]},
+    {data: desserts, type: randomRecipeTypes[2]},
+  ];
+
+  return (
+    <>
+      {sections.map((section, index) => (
+        <HorizontalScroll
+          key={index}
+          data={section.data}
+          sectionTitle={toFistLetterUpperCase(section.type)}
+          isLarge
+        />
+      ))}
+    </>
+  );
+};
+
+const Home = () => {
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
 
   const [appetizers, setAppetizers] = useState<AllRecipeCards>([]);
@@ -97,46 +143,23 @@ const Home = () => {
   };
 
   const onPressSearch = () =>
-    homeNavigation.navigate(ROUTES.HOME_STACK_SCREEN.SEARCH_SCREEN);
+    homeNavigation.navigate(ROUTES.HOME_STACK_SCREEN.SEARCH_RECIPE_SCREEN, {
+      fromScreen: ROUTES.HOME_STACK_SCREEN.HOME_SCREEN,
+    });
 
   return (
     <BaseContainer>
+      {welcomeSection(onPressSearch)}
       <ScrollView>
-        <View style={styles.container}>
-          <Text style={styles.title1}>Welcome</Text>
-          <Text style={styles.title2}>Find your recipe!</Text>
-          <Pressable onPress={onPressSearch} style={styles.searchContainer}>
-            <Text style={styles.searchPlaceholder}>
-              Search by recipe or ingredient
-            </Text>
-            <Icon
-              name="search"
-              size={24}
-              color={colors.white}
-              style={styles.searchIcon}
-            />
-          </Pressable>
-          <Filters
-            selectedCuisine={selectedCuisine}
-            selectedDiet={selectedDiet}
-            isVegetarian={isVegetarian}
-            onSelectCuisine={handleSelectCuisine}
-            onSelectDiet={handleSelectDiet}
-            onToggleVegetarian={handleToggleVegetarian}
-          />
-        </View>
-        <HorizontalScroll
-          data={appetizers}
-          sectionTitle={toFistLetterUpperCase(randomRecipeTypes[0])}
+        <Filters
+          selectedCuisine={selectedCuisine}
+          selectedDiet={selectedDiet}
+          isVegetarian={isVegetarian}
+          onSelectCuisine={handleSelectCuisine}
+          onSelectDiet={handleSelectDiet}
+          onToggleVegetarian={handleToggleVegetarian}
         />
-        <HorizontalScroll
-          data={mainCourse}
-          sectionTitle={toFistLetterUpperCase(randomRecipeTypes[1])}
-        />
-        <HorizontalScroll
-          data={desserts}
-          sectionTitle={toFistLetterUpperCase(randomRecipeTypes[2])}
-        />
+        {recipeListSection({appetizers, mainCourse, desserts})}
       </ScrollView>
     </BaseContainer>
   );
