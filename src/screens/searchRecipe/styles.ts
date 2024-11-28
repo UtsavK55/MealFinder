@@ -9,7 +9,7 @@ export const searchStyles = createThemedStyles((colors, scalingMetrics) => {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      backgroundColor: colors.gray50,
+      backgroundColor: colors.white,
       paddingHorizontal: scaleSize(12),
       marginVertical: scaleSize(10),
       paddingVertical: scaleSize(8),

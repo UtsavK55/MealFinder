@@ -18,11 +18,38 @@ import {useThemeColors} from '@theme';
 
 import {searchStyles} from './styles';
 
-const SearchRecipe = () => {
+const SearchInput = ({
+  searchTerm,
+  setSearchTerm,
+  onPressBack,
+}: SearchInputProps) => {
+  const styles = searchStyles();
   const colors = useThemeColors();
+  return (
+    <View style={styles.container}>
+      <Pressable onPress={onPressBack}>
+        <Icon
+          name={'arrow-back'}
+          color={colors.gray800}
+          size={24}
+          style={styles.icon}
+        />
+      </Pressable>
+      <TextInput
+        value={searchTerm}
+        onChangeText={setSearchTerm}
+        style={styles.searchPlaceholder}
+        placeholder="Search by recipe or ingredient"
+        placeholderTextColor={colors.gray600}
+        autoFocus
+      />
+    </View>
+  );
+};
+
+const SearchRecipe = () => {
   const styles = searchStyles();
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
-  const mealNavigation = useNavigation<MealPlannerScreenNavigationType>();
   const bottomtabNavigation = useNavigation<BottomTabNavigationType>();
   const route =
     useRoute<RouteProp<HomeScreenParamList, 'SEARCH_RECIPE_SCREEN'>>();
@@ -80,40 +107,30 @@ const SearchRecipe = () => {
     }
   };
 
-  const onPressCard = () => {
+  const onPressCard = (recipeId: number) => {
     if (fromScreen === ROUTES.HOME_STACK_SCREEN.HOME_SCREEN) {
-      homeNavigation.navigate(ROUTES.HOME_STACK_SCREEN.DETAILS_SCREEN);
+      homeNavigation.navigate(ROUTES.HOME_STACK_SCREEN.DETAILS_SCREEN, {
+        recipeId,
+      });
     } else {
-      mealNavigation.navigate(ROUTES.BOTTOM_TAB.MEAL_PLANNER, {
-        screen: ROUTES.MEAL_PLANNER__STACK_SCREEN.SERVING_SCREEN,
+      homeNavigation.navigate(ROUTES.HOME_STACK_SCREEN.DETAILS_SCREEN, {
+        mealId,
+        recipeId,
       });
     }
   };
 
   return (
     <BaseContainer>
-      <View style={styles.container}>
-        <Pressable onPress={onPressBack}>
-          <Icon
-            name={'arrow-back'}
-            color={colors.gray800}
-            size={24}
-            style={styles.icon}
-          />
-        </Pressable>
-        <TextInput
-          value={searchTerm}
-          onChangeText={setSearchTerm}
-          style={styles.searchPlaceholder}
-          placeholder="Search by recipe or ingredient"
-          placeholderTextColor={colors.gray600}
-          autoFocus
-        />
-      </View>
+      <SearchInput
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        onPressBack={onPressBack}
+      />
       <FlatList
         data={searchTerm.length === 0 ? randomRecipes : searchedRecipes}
         renderItem={({item}) => (
-          <RecipeCard item={item} onPressCard={onPressCard} />
+          <RecipeCard item={item} onPressCard={() => onPressCard(item?.id)} />
         )}
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={styles.recipeList}

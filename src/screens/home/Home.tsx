@@ -64,20 +64,22 @@ const recipeListSection = ({
   mainCourse,
   desserts,
 }: RecipeListSectionProps) => {
+  const sections = [
+    {data: appetizers, type: randomRecipeTypes[0]},
+    {data: mainCourse, type: randomRecipeTypes[1]},
+    {data: desserts, type: randomRecipeTypes[2]},
+  ];
+
   return (
     <>
-      <HorizontalScroll
-        data={appetizers}
-        sectionTitle={toFistLetterUpperCase(randomRecipeTypes[0])}
-      />
-      <HorizontalScroll
-        data={mainCourse}
-        sectionTitle={toFistLetterUpperCase(randomRecipeTypes[1])}
-      />
-      <HorizontalScroll
-        data={desserts}
-        sectionTitle={toFistLetterUpperCase(randomRecipeTypes[2])}
-      />
+      {sections.map((section, index) => (
+        <HorizontalScroll
+          key={index}
+          data={section.data}
+          sectionTitle={toFistLetterUpperCase(section.type)}
+          isLarge
+        />
+      ))}
     </>
   );
 };
