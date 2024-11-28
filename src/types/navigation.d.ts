@@ -9,7 +9,7 @@ declare global {
   type HomeScreenParamList = {
     HOME_SCREEN: undefined;
     SEARCH_RECIPE_SCREEN: {mealId?: number; fromScreen: string};
-    DETAILS_SCREEN: undefined;
+    DETAILS_SCREEN: {mealId?: number; recipeId: number};
   };
   type HomeScreenNavigationType = NavigationProp<HomeScreenParamList>;
 

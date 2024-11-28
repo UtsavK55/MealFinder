@@ -10,6 +10,7 @@ type AllRecipeCards = RecipeCard[];
 interface HorizontalScrollProps {
   sectionTitle?: string;
   data: AllRecipeCards;
+  isLarge?: boolean;
 }
 
 interface FiltersProps {
@@ -38,4 +39,16 @@ interface RecipeListSectionProps {
   appetizers: AllRecipeCards;
   mainCourse: AllRecipeCards;
   desserts: AllRecipeCards;
+}
+
+interface TabBarProps {
+  tabs: string[];
+  activeTab: number;
+  onTabPress: Dispatch<SetStateAction<number>>;
+  recipeInfo: RecipeDetail;
+}
+
+interface TabContentProps {
+  activeTab: number;
+  recipeInfo: RecipeDetail;
 }
