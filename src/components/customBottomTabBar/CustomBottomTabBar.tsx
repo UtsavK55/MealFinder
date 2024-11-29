@@ -15,7 +15,11 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
   const styles = customBottomTabStyles();
   const colors = useThemeColors();
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        descriptors[state.routes[state.index].key]?.options.tabBarStyle,
+      ]}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
         const label = bottomTabLabels[route.name] || route.name;
