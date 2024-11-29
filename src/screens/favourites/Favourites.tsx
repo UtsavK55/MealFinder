@@ -21,6 +21,7 @@ const Favourites = () => {
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
 
   const [favorites, setFavorites] = useState<AllRecipeCards>([]);
+  const [inFavorites, setInFavorites] = useState(false);
 
   const getFavorites = useCallback(async () => {
     const favoriteIds = (await getData(STORAGE_KEYS.FAVOURITE)) || [];
@@ -33,13 +34,9 @@ const Favourites = () => {
       }),
     );
     setFavorites(favoriteRecipes);
-  }, [isFocused]);
+  }, [isFocused, inFavorites]);
 
   useEffect(() => {
-    getFavorites();
-  }, [getFavorites]);
-
-  const handleUnfavorite = useCallback(() => {
     getFavorites();
   }, [getFavorites]);
 
@@ -66,7 +63,8 @@ const Favourites = () => {
             item={item}
             large={false}
             onPressCard={() => onPressCard(item?.id)}
-            onPressFavorite={handleUnfavorite}
+            inFavorites={inFavorites}
+            setInFavorites={setInFavorites}
           />
         )}
         keyExtractor={item => item.id.toString()}

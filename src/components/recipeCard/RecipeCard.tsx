@@ -16,7 +16,8 @@ const RecipeCard = ({
   item,
   large,
   onPressCard,
-  onPressFavorite,
+  inFavorites,
+  setInFavorites,
 }: RecipeCardProps) => {
   const isFocused = useIsFocused();
   const styles = recipeCardStyles();
@@ -55,8 +56,8 @@ const RecipeCard = ({
     setFavorites(updatedFavorites);
     await storeData(updatedFavorites, STORAGE_KEYS.FAVOURITE);
     setIsFavorite(!isFavorite);
-    if (onPressFavorite) {
-      onPressFavorite();
+    if (setInFavorites) {
+      setInFavorites(!inFavorites);
     }
   };
 
