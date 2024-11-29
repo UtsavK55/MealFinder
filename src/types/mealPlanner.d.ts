@@ -55,4 +55,5 @@ interface MealPlanSectionProps {
   onPressAdd: (id: number) => void;
   mealData: AllRecipeCards;
   timestamp: number;
+  isLoading: boolean;
 }

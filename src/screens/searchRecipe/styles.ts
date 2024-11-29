@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 import {createThemedStyles} from '@helpers';
 
 export const searchStyles = createThemedStyles((colors, scalingMetrics) => {
-  const {scaleSize, moderateScale} = scalingMetrics;
+  const {scaleSize, moderateScale, wp} = scalingMetrics;
   return StyleSheet.create({
     container: {
       flexDirection: 'row',
@@ -32,6 +32,9 @@ export const searchStyles = createThemedStyles((colors, scalingMetrics) => {
     recipeList: {
       paddingBottom: scaleSize(20),
       margin: scaleSize(20),
+    },
+    loader: {
+      marginVertical: scaleSize(wp(25)),
     },
   });
 });

@@ -63,6 +63,7 @@ const recipeListSection = ({
   appetizers,
   mainCourse,
   desserts,
+  isLoading,
 }: RecipeListSectionProps) => {
   const sections = [
     {data: appetizers, type: randomRecipeTypes[0]},
@@ -79,6 +80,7 @@ const recipeListSection = ({
           sectionTitle={toFistLetterUpperCase(section.type)}
           isLarge
           fromScreen={ROUTES.HOME_STACK_SCREEN.HOME_SCREEN}
+          isLoading={isLoading}
         />
       ))}
     </>
@@ -94,8 +96,10 @@ const Home = () => {
   const [selectedCuisine, setSelectedCuisine] = useState<string | null>(null);
   const [selectedDiet, setSelectedDiet] = useState<string | null>(null);
   const [isVegetarian, setIsVegetarian] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getAllData = async () => {
+    setIsLoading(true);
     randomRecipeTypes.map(async type => {
       const url = constructUrl(
         randomRecipeUrl,
@@ -122,6 +126,7 @@ const Home = () => {
       } else {
         setDesserts(recipeData);
       }
+      setIsLoading(false);
     });
   };
 
@@ -160,7 +165,7 @@ const Home = () => {
           onSelectDiet={handleSelectDiet}
           onToggleVegetarian={handleToggleVegetarian}
         />
-        {recipeListSection({appetizers, mainCourse, desserts})}
+        {recipeListSection({appetizers, mainCourse, desserts, isLoading})}
       </ScrollView>
     </BaseContainer>
   );
