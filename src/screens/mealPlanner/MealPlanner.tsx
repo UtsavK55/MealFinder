@@ -24,6 +24,7 @@ const MealPlanSection = ({
   onPressAdd,
   mealData,
   timestamp,
+  isLoading,
 }: MealPlanSectionProps) => {
   const styles = mealPlannerStyles();
   const colors = useThemeColors();
@@ -45,6 +46,7 @@ const MealPlanSection = ({
         fromScreen={ROUTES.MEAL_PLANNER__STACK_SCREEN.MEAL_PLANNER_SCREEN}
         mealId={mealId}
         selectedDate={timestamp}
+        isLoading={isLoading}
       />
     </View>
   );
@@ -57,12 +59,14 @@ const MealPlanner = () => {
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
 
   const [mealPlan, setMealPlan] = useState<AllMealPlans>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {username, hash} = userInfo;
   const formattedDate = formatDate(selectedDate);
   const timestamp = Math.floor(selectedDate.getTime() / 1000);
 
   const getAllData = async () => {
+    setIsLoading(true);
     const mealPlanData = await fetchData(
       mealPlanUrl(username, hash, formattedDate),
     );
@@ -73,6 +77,7 @@ const MealPlanner = () => {
         value,
       })) || [];
     setMealPlan(mealPlanDetail);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -146,6 +151,7 @@ const MealPlanner = () => {
                 mealName={mealName}
                 onPressAdd={onPressAdd}
                 timestamp={timestamp}
+                isLoading={isLoading}
               />
             );
           })}

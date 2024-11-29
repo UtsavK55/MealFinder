@@ -4,6 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 
 import NoDataFound from '@components/noDataFound';
 import RecipeCard from '@components/recipeCard';
+import Loader from '@components/loader';
 import {ROUTES} from '@constants';
 
 import {horizontalScrollStyles} from './styles';
@@ -15,6 +16,7 @@ const HorizontalScroll = ({
   fromScreen,
   mealId,
   selectedDate,
+  isLoading,
 }: HorizontalScrollProps) => {
   const styles = horizontalScrollStyles();
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
@@ -40,21 +42,27 @@ const HorizontalScroll = ({
   return (
     <View style={styles.container}>
       {sectionTitle && <Text style={styles.sectionTitle}>{sectionTitle}</Text>}
-      <FlatList
-        data={data}
-        renderItem={({item}) => (
-          <RecipeCard
-            item={item}
-            large={isLarge}
-            onPressCard={() => onPressCard(item?.id)}
-          />
-        )}
-        keyExtractor={({id}) => id.toString()}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        ListEmptyComponent={<NoDataFound item="recipe" style={styles.noData} />}
-        contentContainerStyle={styles.list}
-      />
+      {isLoading ? (
+        <Loader size={50} style={styles.noData} />
+      ) : (
+        <FlatList
+          data={data}
+          renderItem={({item}) => (
+            <RecipeCard
+              item={item}
+              large={isLarge}
+              onPressCard={() => onPressCard(item?.id)}
+            />
+          )}
+          keyExtractor={({id}) => id.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          ListEmptyComponent={
+            <NoDataFound item="recipe" style={styles.noData} />
+          }
+          contentContainerStyle={styles.list}
+        />
+      )}
     </View>
   );
 };

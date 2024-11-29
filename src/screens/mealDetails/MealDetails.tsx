@@ -10,6 +10,7 @@ import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import BaseContainer from '@components/baseContainer';
+import Loader from '@components/loader';
 import {useUserContext} from '@contexts/UserProvider';
 import {
   emptyRecipeDetail,
@@ -212,6 +213,7 @@ const MealDetails = () => {
   const [mealPlan, setMealPlan] = useState<AllMealPlans>([]);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favorites, setFavorites] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getAllData = async () => {
     const recipeData = await fetchData(getRecipeByIdUrl(recipeId));
@@ -279,8 +281,10 @@ const MealDetails = () => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     getAllData();
     getFavorite();
+    setIsLoading(false);
   }, []);
 
   const mealName = useMemo(() => {
@@ -375,6 +379,10 @@ const MealDetails = () => {
       ],
     );
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <BaseContainer>

@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import BaseContainer from '@components/baseContainer';
 import RecipeCard from '@components/recipeCard';
 import NoDataFound from '@components/noDataFound';
+import Loader from '@components/loader';
 import {ROUTES, STORAGE_KEYS} from '@constants';
 import {getRecipeByIdUrl} from '@network/apiUrl';
 import {fetchData} from '@network/apiMethods';
@@ -22,8 +23,10 @@ const Favourites = () => {
 
   const [favorites, setFavorites] = useState<AllRecipeCards>([]);
   const [inFavorites, setInFavorites] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getFavorites = useCallback(async () => {
+    setIsLoading(true);
     const favoriteIds = (await getData(STORAGE_KEYS.FAVOURITE)) || [];
 
     const favoriteRecipes = await Promise.all(
@@ -34,6 +37,7 @@ const Favourites = () => {
       }),
     );
     setFavorites(favoriteRecipes);
+    setIsLoading(false);
   }, [isFocused, inFavorites]);
 
   useEffect(() => {
@@ -56,22 +60,28 @@ const Favourites = () => {
         <Icon name="heart" size={28} color={colors.red500} />
         <Text style={styles.title}>My Favorites</Text>
       </View>
-      <FlatList
-        data={favorites}
-        renderItem={({item}) => (
-          <RecipeCard
-            item={item}
-            large={false}
-            onPressCard={() => onPressCard(item?.id)}
-            inFavorites={inFavorites}
-            setInFavorites={setInFavorites}
-          />
-        )}
-        keyExtractor={item => item.id.toString()}
-        numColumns={2}
-        contentContainerStyle={styles.listContainer}
-        ListEmptyComponent={<NoDataFound item="recipe" style={styles.noData} />}
-      />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <FlatList
+          data={favorites}
+          renderItem={({item}) => (
+            <RecipeCard
+              item={item}
+              large={false}
+              onPressCard={() => onPressCard(item?.id)}
+              inFavorites={inFavorites}
+              setInFavorites={setInFavorites}
+            />
+          )}
+          keyExtractor={item => item.id.toString()}
+          numColumns={2}
+          contentContainerStyle={styles.listContainer}
+          ListEmptyComponent={
+            <NoDataFound item="recipe" style={styles.noData} />
+          }
+        />
+      )}
     </BaseContainer>
   );
 };

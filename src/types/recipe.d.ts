@@ -14,6 +14,7 @@ interface HorizontalScrollProps {
   fromScreen: string;
   mealId?: number;
   selectedDate?: number;
+  isLoading: boolean;
 }
 
 interface FiltersProps {
@@ -36,13 +37,15 @@ interface RecipeCardProps {
   item: RecipeCard;
   large?: boolean;
   onPressCard?: () => void;
-  onPressFavorite?: () => void;
+  inFavorites?: boolean;
+  setInFavorites?: Dispatch<SetStateAction<boolean>>;
 }
 
 interface RecipeListSectionProps {
   appetizers: AllRecipeCards;
   mainCourse: AllRecipeCards;
   desserts: AllRecipeCards;
+  isLoading: boolean;
 }
 
 interface TabBarProps {
