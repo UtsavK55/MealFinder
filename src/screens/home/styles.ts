@@ -5,7 +5,7 @@ import {createThemedStyles} from '@helpers';
 export const homeStyles = createThemedStyles((colors, scalingMetrics) => {
   const {hp, wp, scaleSize, moderateScale} = scalingMetrics;
   return StyleSheet.create({
-    container: {paddingHorizontal: scaleSize(20), paddingVertical: 20},
+    container: {padding: scaleSize(20)},
     title1: {
       color: colors.gray800,
       fontSize: moderateScale(18),

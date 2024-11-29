@@ -8,8 +8,17 @@ declare global {
   type HomeScreenNames = keyof typeof ROUTES.HOME_STACK_SCREEN;
   type HomeScreenParamList = {
     HOME_SCREEN: undefined;
-    SEARCH_RECIPE_SCREEN: {mealId?: number; fromScreen: string};
-    DETAILS_SCREEN: {mealId?: number; recipeId: number};
+    SEARCH_RECIPE_SCREEN: {
+      mealId?: number;
+      selectedDate?: number;
+      fromScreen: string;
+    };
+    DETAILS_SCREEN: {
+      mealId?: number;
+      selectedDate?: number;
+      recipeId: number;
+      fromScreen: string;
+    };
   };
   type HomeScreenNavigationType = NavigationProp<HomeScreenParamList>;
 

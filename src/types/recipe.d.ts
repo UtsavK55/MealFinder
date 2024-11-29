@@ -11,6 +11,9 @@ interface HorizontalScrollProps {
   sectionTitle?: string;
   data: AllRecipeCards;
   isLarge?: boolean;
+  fromScreen: string;
+  mealId?: number;
+  selectedDate?: number;
 }
 
 interface FiltersProps {
@@ -33,6 +36,7 @@ interface RecipeCardProps {
   item: RecipeCard;
   large?: boolean;
   onPressCard?: () => void;
+  onPressFavorite?: () => void;
 }
 
 interface RecipeListSectionProps {

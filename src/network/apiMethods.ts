@@ -12,9 +12,9 @@ export const fetchData = async (url: string, config?: {}) => {
   }
 };
 
-export const addData = async (url: string) => {
+export const addData = async (url: string, config?: {}) => {
   try {
-    const response = await _post(url);
+    const response = await _post(url, config);
     return response;
   } catch (error) {
     ErrorHandler(error as AxiosError);
@@ -29,9 +29,9 @@ export const updateData = async (url: string) => {
     ErrorHandler(error as AxiosError);
   }
 };
-export const deleteData = async (url: string) => {
+export const deleteData = async (url: string, config?: {}) => {
   try {
-    const response = await _delete(url);
+    const response = await _delete(url, config);
     return response;
   } catch (error) {
     ErrorHandler(error as AxiosError);

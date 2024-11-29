@@ -1,15 +1,33 @@
-import React, {useEffect, useState} from 'react';
-import {Pressable, ScrollView, Text, View} from 'react-native';
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import React, {useEffect, useState, useMemo} from 'react';
+import {Alert, Pressable, ScrollView, Text, View} from 'react-native';
+import {
+  CommonActions,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import BaseContainer from '@components/baseContainer';
-import {emptyRecipeDetail, mealTypes, recipeDetailTabs} from '@constants';
+import {useUserContext} from '@contexts/UserProvider';
+import {
+  emptyRecipeDetail,
+  mealTypes,
+  recipeDetailTabs,
+  ROUTES,
+  STORAGE_KEYS,
+} from '@constants';
 import {IMAGES} from '@constants/imageConstants';
-import {getValueOrNA, removeHtmlTags, truncateText} from '@helpers';
-import {fetchData} from '@network/apiMethods';
-import {getRecipeByIdUrl} from '@network/apiUrl';
+import {formatDate, getValueOrNA, removeHtmlTags, truncateText} from '@helpers';
+import {addData, deleteData, fetchData} from '@network/apiMethods';
+import {
+  addMealToPlanUrl,
+  deleteMealFromPlanUrl,
+  getRecipeByIdUrl,
+  mealPlanUrl,
+} from '@network/apiUrl';
+import {getData, storeData} from '@storage';
 import {useThemeColors} from '@theme';
 
 import {mealDetailStyles} from './styles';
@@ -19,15 +37,17 @@ const TabBar = ({tabs, activeTab, onTabPress, recipeInfo}: TabBarProps) => {
   const colors = useThemeColors();
   const {extendedIngredients, instructions} = recipeInfo;
 
-  const filteredTabs = tabs.filter(tab => {
-    if (tab === 'Ingredients' && extendedIngredients.length === 0) {
-      return false;
-    }
-    if (tab === 'Instructions' && !instructions) {
-      return false;
-    }
-    return true;
-  });
+  const filteredTabs = useMemo(() => {
+    return tabs.filter(tab => {
+      if (tab === 'Ingredients' && extendedIngredients.length === 0) {
+        return false;
+      }
+      if (tab === 'Instructions' && !instructions) {
+        return false;
+      }
+      return true;
+    });
+  }, [tabs, extendedIngredients, instructions]);
 
   return (
     <View style={styles.tabBar}>
@@ -55,11 +75,49 @@ const TabBar = ({tabs, activeTab, onTabPress, recipeInfo}: TabBarProps) => {
   );
 };
 
+const recipeDetail = (recipeInfo: RecipeDetail) => [
+  {label: 'Servings', value: recipeInfo.servings},
+  {
+    label: 'Ready in',
+    value: recipeInfo.readyInMinutes
+      ? `${recipeInfo.readyInMinutes} minutes`
+      : null,
+  },
+  {
+    label: 'Cooking time',
+    value: recipeInfo.cookingMinutes
+      ? `${recipeInfo.cookingMinutes} minutes`
+      : null,
+  },
+  {
+    label: 'Preparation time',
+    value: recipeInfo.preparationMinutes
+      ? `${recipeInfo.preparationMinutes} minutes`
+      : null,
+  },
+  {label: recipeInfo.vegan ? 'Vegan' : 'Non-Vegan', value: ''},
+  {
+    label: recipeInfo.vegetarian ? 'Vegetarian' : 'Non-Vegetarian',
+    value: '',
+  },
+  {
+    label: recipeInfo.dairyFree ? 'Non-Dairy' : 'Contains Dairy products',
+    value: '',
+  },
+  {
+    label: recipeInfo.glutenFree ? 'Gluten free' : 'Contains Gluten',
+    value: '',
+  },
+];
+
 const TabContent = ({activeTab, recipeInfo}: TabContentProps) => {
   const styles = mealDetailStyles();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const cleanSummary = removeHtmlTags(recipeInfo?.summary);
+  const cleanSummary = useMemo(
+    () => removeHtmlTags(recipeInfo?.summary),
+    [recipeInfo?.summary],
+  );
 
   const renderSummarySection = () => (
     <View>
@@ -77,40 +135,7 @@ const TabContent = ({activeTab, recipeInfo}: TabContentProps) => {
     </View>
   );
 
-  const recipeDetails = [
-    {label: 'Servings', value: recipeInfo.servings},
-    {
-      label: 'Ready in',
-      value: recipeInfo.readyInMinutes
-        ? `${recipeInfo.readyInMinutes} minutes`
-        : null,
-    },
-    {
-      label: 'Cooking time',
-      value: recipeInfo.cookingMinutes
-        ? `${recipeInfo.cookingMinutes} minutes`
-        : null,
-    },
-    {
-      label: 'Preparation time',
-      value: recipeInfo.preparationMinutes
-        ? `${recipeInfo.preparationMinutes} minutes`
-        : null,
-    },
-    {label: recipeInfo.vegan ? 'Vegan' : 'Non-Vegan', value: ''},
-    {
-      label: recipeInfo.vegetarian ? 'Vegetarian' : 'Non-Vegetarian',
-      value: '',
-    },
-    {
-      label: recipeInfo.dairyFree ? 'Non-Dairy' : 'Contains Dairy products',
-      value: '',
-    },
-    {
-      label: recipeInfo.glutenFree ? 'Gluten free' : 'Contains Gluten',
-      value: '',
-    },
-  ];
+  const recipeDetails = useMemo(() => recipeDetail(recipeInfo), [recipeInfo]);
 
   const renderDetailsSection = () => (
     <>
@@ -170,14 +195,23 @@ const TabContent = ({activeTab, recipeInfo}: TabContentProps) => {
 };
 
 const MealDetails = () => {
+  const {userInfo} = useUserContext();
   const styles = mealDetailStyles();
   const colors = useThemeColors();
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
+  const bottomtabNavigation = useNavigation<BottomTabNavigationType>();
   const route = useRoute<RouteProp<HomeScreenParamList, 'DETAILS_SCREEN'>>();
-  const {mealId, recipeId} = route?.params;
+
+  const {mealId, selectedDate, recipeId, fromScreen} = route?.params;
+  const {username, hash} = userInfo;
+  const formattedDate =
+    selectedDate && formatDate(new Date(selectedDate * 1000));
 
   const [activeTab, setActiveTab] = useState(0);
   const [recipeInfo, setRecipeInfo] = useState<RecipeDetail>(emptyRecipeDetail);
+  const [mealPlan, setMealPlan] = useState<AllMealPlans>([]);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favorites, setFavorites] = useState<number[]>([]);
 
   const getAllData = async () => {
     const recipeData = await fetchData(getRecipeByIdUrl(recipeId));
@@ -221,14 +255,125 @@ const MealDetails = () => {
     };
 
     setRecipeInfo(transformedRecipeData);
+
+    if (selectedDate) {
+      const mealPlanData = await fetchData(
+        mealPlanUrl(username, hash, formattedDate as string),
+      );
+
+      const mealPlanDetail =
+        mealPlanData?.items?.map(({slot, value}: MealPlanDetail) => ({
+          slot,
+          value,
+        })) || [];
+      setMealPlan(mealPlanDetail);
+    }
+  };
+
+  const getFavorite = async () => {
+    const data = await getData(STORAGE_KEYS.FAVOURITE);
+    setFavorites(data || []);
+
+    const favorite = data.includes(recipeId);
+    setIsFavorite(favorite);
   };
 
   useEffect(() => {
     getAllData();
+    getFavorite();
   }, []);
 
+  const mealName = useMemo(() => {
+    return mealTypes.find(item => item?.mealId === mealId)?.mealName;
+  }, [mealTypes, mealId]);
+
+  const {id, title, image} = recipeInfo;
+  const queryParams = useMemo(
+    () => ({
+      date: selectedDate,
+      slot: mealId,
+      position: 0,
+      type: 'RECIPE',
+      value: {
+        id,
+        title,
+        image,
+      },
+    }),
+    [id, title, image, mealId, selectedDate],
+  );
+
+  const mealMatch = useMemo(() => {
+    return mealPlan.some(
+      meal => meal.slot === mealId && meal.value.id === recipeId,
+    );
+  }, [mealPlan, mealId, recipeId]);
+
   const onPressBack = () => {
-    homeNavigation.goBack();
+    if (fromScreen === ROUTES.MEAL_PLANNER__STACK_SCREEN.MEAL_PLANNER_SCREEN) {
+      bottomtabNavigation.dispatch(
+        CommonActions.reset({
+          routes: [{name: ROUTES.BOTTOM_TAB.MEAL_PLANNER}],
+        }),
+      );
+    } else if (fromScreen === ROUTES.BOTTOM_TAB.FAVOURITES) {
+      bottomtabNavigation.dispatch(
+        CommonActions.reset({
+          routes: [{name: ROUTES.BOTTOM_TAB.FAVOURITES}],
+        }),
+      );
+    } else {
+      homeNavigation.goBack();
+    }
+  };
+
+  const onPressAdd = async () => {
+    Alert.alert(
+      `Add to ${mealName}`,
+      'Are you sure you want to add this recipe to your meal plan?',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Add',
+          style: 'default',
+          onPress: async () => {
+            await addData(addMealToPlanUrl(username, hash), queryParams);
+            onPressBack();
+          },
+        },
+      ],
+    );
+  };
+
+  const onPressFavoriteIcon = async (id: number) => {
+    let updatedFavorites: number[];
+
+    if (isFavorite) {
+      updatedFavorites = favorites.filter(item => item !== id);
+    } else {
+      updatedFavorites = [...favorites, id];
+    }
+    setFavorites(updatedFavorites);
+    await storeData(updatedFavorites, STORAGE_KEYS.FAVOURITE);
+    setIsFavorite(!isFavorite);
+  };
+
+  const onPressRemove = () => {
+    Alert.alert(
+      `Remove from ${mealName}`,
+      'Are you sure you want to remove this recipe from your meal plan?',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: async () => {
+            await deleteData(deleteMealFromPlanUrl(username, hash, id));
+            onPressBack();
+          },
+        },
+      ],
+    );
   };
 
   return (
@@ -236,8 +381,14 @@ const MealDetails = () => {
       <Pressable onPress={onPressBack} style={[styles.backIcon, styles.icon]}>
         <Icon name={'arrow-back'} color={colors.black} size={28} />
       </Pressable>
-      <Pressable style={[styles.favouriteIcon, styles.icon]}>
-        <Icon name="heart" size={28} color={colors.red500} />
+      <Pressable
+        style={[styles.favouriteIcon, styles.icon]}
+        onPress={() => onPressFavoriteIcon(recipeInfo?.id)}>
+        {isFavorite ? (
+          <Icon name="heart" size={24} color={colors.red500} />
+        ) : (
+          <Icon name="heart-outline" size={24} color={colors.black} />
+        )}
       </Pressable>
       <FastImage
         source={{
@@ -260,12 +411,18 @@ const MealDetails = () => {
           <TabContent activeTab={activeTab} recipeInfo={recipeInfo} />
         </View>
       </ScrollView>
-      {mealId && (
-        <Pressable>
-          <Text style={styles.addButton}>
-            Add to {mealTypes.find(item => item?.mealId == mealId)?.mealName}
-          </Text>
-        </Pressable>
+      {mealId ? (
+        !mealMatch ? (
+          <Pressable onPress={onPressAdd}>
+            <Text style={styles.addButton}>Add to {mealName}</Text>
+          </Pressable>
+        ) : (
+          <Pressable onPress={onPressRemove}>
+            <Text style={styles.addButton}>Remove from {mealName}</Text>
+          </Pressable>
+        )
+      ) : (
+        <></>
       )}
     </BaseContainer>
   );

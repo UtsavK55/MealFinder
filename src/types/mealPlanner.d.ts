@@ -36,3 +36,23 @@ interface RecipeDetail {
   instructions: Instruction[];
   extendedIngredients: Ingredient[];
 }
+
+interface MealPlanDetail {
+  slot: number;
+  value: RecipeCard;
+}
+
+type AllMealPlans = MealPlanDetail[];
+
+interface DateContext {
+  selectedDate: Date;
+  setSelectedDate: Dispatch<SetStateAction<Date>>;
+}
+
+interface MealPlanSectionProps {
+  mealId: number;
+  mealName: string;
+  onPressAdd: (id: number) => void;
+  mealData: AllRecipeCards;
+  timestamp: number;
+}
