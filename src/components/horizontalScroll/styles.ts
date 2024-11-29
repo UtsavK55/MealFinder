@@ -4,7 +4,7 @@ import {createThemedStyles} from '@helpers';
 
 export const horizontalScrollStyles = createThemedStyles(
   (colors, scalingMetrics) => {
-    const {scaleSize, moderateScale} = scalingMetrics;
+    const {scaleSize, moderateScale, wp} = scalingMetrics;
     return StyleSheet.create({
       container: {
         flex: 1,
@@ -19,6 +19,11 @@ export const horizontalScrollStyles = createThemedStyles(
       list: {
         marginTop: scaleSize(10),
         paddingHorizontal: scaleSize(12),
+      },
+      noData: {
+        textAlign: 'center',
+        marginVertical: scaleSize(60),
+        marginHorizontal: wp(35),
       },
     });
   },
