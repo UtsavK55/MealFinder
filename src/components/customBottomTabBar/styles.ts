@@ -16,7 +16,7 @@ export const customBottomTabStyles = createThemedStyles(
         elevation: 8,
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        shadowColor: colors.black,
+        shadowColor: colors.fixedBlack,
         shadowOffset: {width: 0, height: -scaleSize(4)},
       },
       tabButton: {
