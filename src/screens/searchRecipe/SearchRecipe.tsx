@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Pressable, TextInput, View} from 'react-native';
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  Pressable,
+  TextInput,
+  View,
+} from 'react-native';
 import {
   CommonActions,
   RouteProp,
@@ -11,7 +17,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import BaseContainer from '@components/baseContainer';
 import NoDataFound from '@components/noDataFound';
 import RecipeCard from '@components/recipeCard';
+import Loader from '@components/loader';
 import {ROUTES} from '@constants';
+import {isAndroid} from '@helpers';
 import {fetchData} from '@network/apiMethods';
 import {randomRecipeUrl, searchRecipeUrl} from '@network/apiUrl';
 import {useThemeColors} from '@theme';
@@ -58,6 +66,7 @@ const SearchRecipe = () => {
   const [searchedRecipes, setSearchedRecipes] = useState<AllRecipeCards>([]);
   const [randomRecipes, setRandomRecipes] = useState<AllRecipeCards>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [isLoading, setisLoading] = useState(false);
 
   const fetchRandomRecipes = async () => {
     const randomdata = await fetchData(randomRecipeUrl);
@@ -84,11 +93,13 @@ const SearchRecipe = () => {
   };
 
   const getAllData = async () => {
+    setisLoading(true);
     if (searchTerm.length === 0) {
       await fetchRandomRecipes();
     } else {
       await fetchSearchedRecipes();
     }
+    setisLoading(false);
   };
 
   useEffect(() => {
@@ -123,22 +134,31 @@ const SearchRecipe = () => {
 
   return (
     <BaseContainer>
-      <SearchInput
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        onPressBack={onPressBack}
-      />
-      <FlatList
-        data={searchTerm.length === 0 ? randomRecipes : searchedRecipes}
-        renderItem={({item}) => (
-          <RecipeCard item={item} onPressCard={() => onPressCard(item?.id)} />
+      <KeyboardAvoidingView behavior={isAndroid ? 'height' : 'padding'}>
+        <SearchInput
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          onPressBack={onPressBack}
+        />
+        {isLoading ? (
+          <Loader style={styles.loader} />
+        ) : (
+          <FlatList
+            data={searchTerm.length === 0 ? randomRecipes : searchedRecipes}
+            renderItem={({item}) => (
+              <RecipeCard
+                item={item}
+                onPressCard={() => onPressCard(item?.id)}
+              />
+            )}
+            keyExtractor={item => item.id.toString()}
+            contentContainerStyle={styles.recipeList}
+            showsVerticalScrollIndicator={false}
+            numColumns={2}
+            ListEmptyComponent={<NoDataFound item="recipe" />}
+          />
         )}
-        keyExtractor={item => item.id.toString()}
-        contentContainerStyle={styles.recipeList}
-        showsVerticalScrollIndicator={false}
-        numColumns={2}
-        ListEmptyComponent={<NoDataFound item="recipe" />}
-      />
+      </KeyboardAvoidingView>
     </BaseContainer>
   );
 };
