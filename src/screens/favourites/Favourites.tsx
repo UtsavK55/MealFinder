@@ -3,6 +3,7 @@ import {FlatList, Text, View} from 'react-native';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import BaseContainer from '@components/baseContainer';
 import RecipeCard from '@components/recipeCard';
 import NoDataFound from '@components/noDataFound';
 import {ROUTES, STORAGE_KEYS} from '@constants';
@@ -12,7 +13,6 @@ import {getData} from '@storage';
 import {useThemeColors} from '@theme';
 
 import {favoritesScreenStyles} from './styles';
-import BaseContainer from '@components/baseContainer';
 
 const Favourites = () => {
   const isFocused = useIsFocused();

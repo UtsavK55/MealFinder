@@ -5,7 +5,7 @@ export const DateContext = createContext<DateContext | undefined>(undefined);
 export const useDateContext = () => {
   const context = useContext(DateContext);
   if (!context) {
-    throw new Error('userContext must be used within a DateProvider');
+    throw new Error('dateContext must be used within a DateProvider');
   }
   return context;
 };
