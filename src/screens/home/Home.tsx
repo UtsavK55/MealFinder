@@ -78,6 +78,7 @@ const recipeListSection = ({
           data={section.data}
           sectionTitle={toFistLetterUpperCase(section.type)}
           isLarge
+          fromScreen={ROUTES.HOME_STACK_SCREEN.HOME_SCREEN}
         />
       ))}
     </>

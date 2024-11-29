@@ -53,7 +53,7 @@ const SearchRecipe = () => {
   const bottomtabNavigation = useNavigation<BottomTabNavigationType>();
   const route =
     useRoute<RouteProp<HomeScreenParamList, 'SEARCH_RECIPE_SCREEN'>>();
-  const {mealId, fromScreen} = route?.params;
+  const {mealId, selectedDate, fromScreen} = route?.params;
 
   const [searchedRecipes, setSearchedRecipes] = useState<AllRecipeCards>([]);
   const [randomRecipes, setRandomRecipes] = useState<AllRecipeCards>([]);
@@ -115,6 +115,7 @@ const SearchRecipe = () => {
     } else {
       homeNavigation.navigate(ROUTES.HOME_STACK_SCREEN.DETAILS_SCREEN, {
         mealId,
+        selectedDate,
         recipeId,
       });
     }

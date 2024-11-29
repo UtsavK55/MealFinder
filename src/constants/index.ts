@@ -1,5 +1,7 @@
 export const STORAGE_KEYS = {
   DARK_MODE: 'darkMode',
+  USER_DATA: 'userData',
+  FAVOURITE: 'FAVOURITE',
 };
 export const ROUTES = {
   BOTTOM_TAB: {
