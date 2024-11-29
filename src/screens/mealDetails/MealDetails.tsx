@@ -75,6 +75,41 @@ const TabBar = ({tabs, activeTab, onTabPress, recipeInfo}: TabBarProps) => {
   );
 };
 
+const recipeDetail = (recipeInfo: RecipeDetail) => [
+  {label: 'Servings', value: recipeInfo.servings},
+  {
+    label: 'Ready in',
+    value: recipeInfo.readyInMinutes
+      ? `${recipeInfo.readyInMinutes} minutes`
+      : null,
+  },
+  {
+    label: 'Cooking time',
+    value: recipeInfo.cookingMinutes
+      ? `${recipeInfo.cookingMinutes} minutes`
+      : null,
+  },
+  {
+    label: 'Preparation time',
+    value: recipeInfo.preparationMinutes
+      ? `${recipeInfo.preparationMinutes} minutes`
+      : null,
+  },
+  {label: recipeInfo.vegan ? 'Vegan' : 'Non-Vegan', value: ''},
+  {
+    label: recipeInfo.vegetarian ? 'Vegetarian' : 'Non-Vegetarian',
+    value: '',
+  },
+  {
+    label: recipeInfo.dairyFree ? 'Non-Dairy' : 'Contains Dairy products',
+    value: '',
+  },
+  {
+    label: recipeInfo.glutenFree ? 'Gluten free' : 'Contains Gluten',
+    value: '',
+  },
+];
+
 const TabContent = ({activeTab, recipeInfo}: TabContentProps) => {
   const styles = mealDetailStyles();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -100,43 +135,7 @@ const TabContent = ({activeTab, recipeInfo}: TabContentProps) => {
     </View>
   );
 
-  const recipeDetails = useMemo(
-    () => [
-      {label: 'Servings', value: recipeInfo.servings},
-      {
-        label: 'Ready in',
-        value: recipeInfo.readyInMinutes
-          ? `${recipeInfo.readyInMinutes} minutes`
-          : null,
-      },
-      {
-        label: 'Cooking time',
-        value: recipeInfo.cookingMinutes
-          ? `${recipeInfo.cookingMinutes} minutes`
-          : null,
-      },
-      {
-        label: 'Preparation time',
-        value: recipeInfo.preparationMinutes
-          ? `${recipeInfo.preparationMinutes} minutes`
-          : null,
-      },
-      {label: recipeInfo.vegan ? 'Vegan' : 'Non-Vegan', value: ''},
-      {
-        label: recipeInfo.vegetarian ? 'Vegetarian' : 'Non-Vegetarian',
-        value: '',
-      },
-      {
-        label: recipeInfo.dairyFree ? 'Non-Dairy' : 'Contains Dairy products',
-        value: '',
-      },
-      {
-        label: recipeInfo.glutenFree ? 'Gluten free' : 'Contains Gluten',
-        value: '',
-      },
-    ],
-    [recipeInfo],
-  );
+  const recipeDetails = useMemo(() => recipeDetail(recipeInfo), [recipeInfo]);
 
   const renderDetailsSection = () => (
     <>
