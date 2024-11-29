@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import {Alert, Pressable, ScrollView, Text, View} from 'react-native';
 import {
   CommonActions,
@@ -37,15 +37,17 @@ const TabBar = ({tabs, activeTab, onTabPress, recipeInfo}: TabBarProps) => {
   const colors = useThemeColors();
   const {extendedIngredients, instructions} = recipeInfo;
 
-  const filteredTabs = tabs.filter(tab => {
-    if (tab === 'Ingredients' && extendedIngredients.length === 0) {
-      return false;
-    }
-    if (tab === 'Instructions' && !instructions) {
-      return false;
-    }
-    return true;
-  });
+  const filteredTabs = useMemo(() => {
+    return tabs.filter(tab => {
+      if (tab === 'Ingredients' && extendedIngredients.length === 0) {
+        return false;
+      }
+      if (tab === 'Instructions' && !instructions) {
+        return false;
+      }
+      return true;
+    });
+  }, [tabs, extendedIngredients, instructions]);
 
   return (
     <View style={styles.tabBar}>
@@ -77,7 +79,10 @@ const TabContent = ({activeTab, recipeInfo}: TabContentProps) => {
   const styles = mealDetailStyles();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const cleanSummary = removeHtmlTags(recipeInfo?.summary);
+  const cleanSummary = useMemo(
+    () => removeHtmlTags(recipeInfo?.summary),
+    [recipeInfo?.summary],
+  );
 
   const renderSummarySection = () => (
     <View>
@@ -95,40 +100,43 @@ const TabContent = ({activeTab, recipeInfo}: TabContentProps) => {
     </View>
   );
 
-  const recipeDetails = [
-    {label: 'Servings', value: recipeInfo.servings},
-    {
-      label: 'Ready in',
-      value: recipeInfo.readyInMinutes
-        ? `${recipeInfo.readyInMinutes} minutes`
-        : null,
-    },
-    {
-      label: 'Cooking time',
-      value: recipeInfo.cookingMinutes
-        ? `${recipeInfo.cookingMinutes} minutes`
-        : null,
-    },
-    {
-      label: 'Preparation time',
-      value: recipeInfo.preparationMinutes
-        ? `${recipeInfo.preparationMinutes} minutes`
-        : null,
-    },
-    {label: recipeInfo.vegan ? 'Vegan' : 'Non-Vegan', value: ''},
-    {
-      label: recipeInfo.vegetarian ? 'Vegetarian' : 'Non-Vegetarian',
-      value: '',
-    },
-    {
-      label: recipeInfo.dairyFree ? 'Non-Dairy' : 'Contains Dairy products',
-      value: '',
-    },
-    {
-      label: recipeInfo.glutenFree ? 'Gluten free' : 'Contains Gluten',
-      value: '',
-    },
-  ];
+  const recipeDetails = useMemo(
+    () => [
+      {label: 'Servings', value: recipeInfo.servings},
+      {
+        label: 'Ready in',
+        value: recipeInfo.readyInMinutes
+          ? `${recipeInfo.readyInMinutes} minutes`
+          : null,
+      },
+      {
+        label: 'Cooking time',
+        value: recipeInfo.cookingMinutes
+          ? `${recipeInfo.cookingMinutes} minutes`
+          : null,
+      },
+      {
+        label: 'Preparation time',
+        value: recipeInfo.preparationMinutes
+          ? `${recipeInfo.preparationMinutes} minutes`
+          : null,
+      },
+      {label: recipeInfo.vegan ? 'Vegan' : 'Non-Vegan', value: ''},
+      {
+        label: recipeInfo.vegetarian ? 'Vegetarian' : 'Non-Vegetarian',
+        value: '',
+      },
+      {
+        label: recipeInfo.dairyFree ? 'Non-Dairy' : 'Contains Dairy products',
+        value: '',
+      },
+      {
+        label: recipeInfo.glutenFree ? 'Gluten free' : 'Contains Gluten',
+        value: '',
+      },
+    ],
+    [recipeInfo],
+  );
 
   const renderDetailsSection = () => (
     <>
@@ -266,6 +274,7 @@ const MealDetails = () => {
   const getFavorite = async () => {
     const data = await getData(STORAGE_KEYS.FAVOURITE);
     setFavorites(data || []);
+
     const favorite = data.includes(recipeId);
     setIsFavorite(favorite);
   };
@@ -275,24 +284,31 @@ const MealDetails = () => {
     getFavorite();
   }, []);
 
-  const mealName = mealTypes.find(item => item?.mealId == mealId)?.mealName;
+  const mealName = useMemo(() => {
+    return mealTypes.find(item => item?.mealId === mealId)?.mealName;
+  }, [mealTypes, mealId]);
 
   const {id, title, image} = recipeInfo;
-  const queryParams = {
-    date: selectedDate,
-    slot: mealId,
-    position: 0,
-    type: 'RECIPE',
-    value: {
-      id,
-      title,
-      image,
-    },
-  };
-
-  const mealMatch = mealPlan.some(
-    meal => meal.slot === mealId && meal.value.id === recipeId,
+  const queryParams = useMemo(
+    () => ({
+      date: selectedDate,
+      slot: mealId,
+      position: 0,
+      type: 'RECIPE',
+      value: {
+        id,
+        title,
+        image,
+      },
+    }),
+    [id, title, image, mealId, selectedDate],
   );
+
+  const mealMatch = useMemo(() => {
+    return mealPlan.some(
+      meal => meal.slot === mealId && meal.value.id === recipeId,
+    );
+  }, [mealPlan, mealId, recipeId]);
 
   const onPressBack = () => {
     if (fromScreen === ROUTES.MEAL_PLANNER__STACK_SCREEN.MEAL_PLANNER_SCREEN) {

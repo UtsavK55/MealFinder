@@ -18,12 +18,42 @@ import {useThemeColors} from '@theme';
 
 import {mealPlannerStyles} from './styles';
 
+const MealPlanSection = ({
+  mealId,
+  mealName,
+  onPressAdd,
+  mealData,
+  timestamp,
+}: MealPlanSectionProps) => {
+  const styles = mealPlannerStyles();
+  const colors = useThemeColors();
+  const {scaleSize} = useScalingMetrics();
+  return (
+    <View key={mealId}>
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{mealName}</Text>
+        <Pressable onPress={() => onPressAdd(mealId)}>
+          <Icon
+            name="add-circle"
+            color={colors.orange600}
+            size={scaleSize(24)}
+          />
+        </Pressable>
+      </View>
+      <HorizontalScroll
+        data={mealData}
+        fromScreen={ROUTES.MEAL_PLANNER__STACK_SCREEN.MEAL_PLANNER_SCREEN}
+        mealId={mealId}
+        selectedDate={timestamp}
+      />
+    </View>
+  );
+};
+
 const MealPlanner = () => {
   const {userInfo} = useUserContext();
   const {selectedDate, setSelectedDate} = useDateContext();
   const styles = mealPlannerStyles();
-  const {scaleSize} = useScalingMetrics();
-  const colors = useThemeColors();
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
 
   const [mealPlan, setMealPlan] = useState<AllMealPlans>([]);
@@ -109,26 +139,14 @@ const MealPlanner = () => {
               .map(({value}) => value);
 
             return (
-              <View key={mealId}>
-                <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>{mealName}</Text>
-                  <Pressable onPress={() => onPressAdd(mealId)}>
-                    <Icon
-                      name="add-circle"
-                      color={colors.orange600}
-                      size={scaleSize(24)}
-                    />
-                  </Pressable>
-                </View>
-                <HorizontalScroll
-                  data={mealData}
-                  fromScreen={
-                    ROUTES.MEAL_PLANNER__STACK_SCREEN.MEAL_PLANNER_SCREEN
-                  }
-                  mealId={mealId}
-                  selectedDate={timestamp}
-                />
-              </View>
+              <MealPlanSection
+                key={mealId}
+                mealId={mealId}
+                mealData={mealData}
+                mealName={mealName}
+                onPressAdd={onPressAdd}
+                timestamp={timestamp}
+              />
             );
           })}
         </ScrollView>

@@ -48,3 +48,11 @@ interface DateContext {
   selectedDate: Date;
   setSelectedDate: Dispatch<SetStateAction<Date>>;
 }
+
+interface MealPlanSectionProps {
+  mealId: number;
+  mealName: string;
+  onPressAdd: (id: number) => void;
+  mealData: AllRecipeCards;
+  timestamp: number;
+}
