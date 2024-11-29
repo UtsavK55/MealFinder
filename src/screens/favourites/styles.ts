@@ -6,10 +6,6 @@ export const favoritesScreenStyles = createThemedStyles(
   (colors, scalingMetrics) => {
     const {scaleSize, moderateScale, wp} = scalingMetrics;
     return StyleSheet.create({
-      container: {
-        flex: 1,
-        backgroundColor: colors.white,
-      },
       header: {
         flexDirection: 'row',
         alignItems: 'center',

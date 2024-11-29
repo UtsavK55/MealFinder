@@ -52,7 +52,7 @@ const HorizontalScroll = ({
         keyExtractor={({id}) => id.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}
-        ListEmptyComponent={<NoDataFound item="recipe" />}
+        ListEmptyComponent={<NoDataFound item="recipe" style={styles.noData} />}
         contentContainerStyle={styles.list}
       />
     </View>

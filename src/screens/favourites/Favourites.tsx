@@ -12,6 +12,7 @@ import {getData} from '@storage';
 import {useThemeColors} from '@theme';
 
 import {favoritesScreenStyles} from './styles';
+import BaseContainer from '@components/baseContainer';
 
 const Favourites = () => {
   const isFocused = useIsFocused();
@@ -53,7 +54,7 @@ const Favourites = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <BaseContainer>
       <View style={styles.header}>
         <Icon name="heart" size={28} color={colors.red500} />
         <Text style={styles.title}>My Favorites</Text>
@@ -73,7 +74,7 @@ const Favourites = () => {
         contentContainerStyle={styles.listContainer}
         ListEmptyComponent={<NoDataFound item="recipe" style={styles.noData} />}
       />
-    </View>
+    </BaseContainer>
   );
 };
 
