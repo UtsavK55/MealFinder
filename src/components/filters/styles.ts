@@ -3,14 +3,12 @@ import {createThemedStyles} from '@helpers';
 export const filterStyles = createThemedStyles((colors, scalingMetrics) => {
   const {scaleSize, moderateScale} = scalingMetrics;
   return {
-    container: {
-      paddingHorizontal: scaleSize(20),
-    },
     title: {
       fontSize: moderateScale(16),
       fontWeight: 'bold',
       marginBottom: scaleSize(10),
       color: colors.black,
+      paddingHorizontal: scaleSize(20),
     },
     filterItem: {
       backgroundColor: colors.gray50,
@@ -35,11 +33,15 @@ export const filterStyles = createThemedStyles((colors, scalingMetrics) => {
       alignItems: 'center',
       justifyContent: 'space-between',
       marginBottom: scaleSize(20),
+      paddingHorizontal: scaleSize(20),
     },
     vegetarianText: {
       fontSize: moderateScale(16),
       fontWeight: 'bold',
       color: colors.black,
+    },
+    scrollFilter: {
+      paddingLeft: scaleSize(20),
     },
   };
 });

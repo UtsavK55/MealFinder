@@ -28,7 +28,7 @@ export const homeStyles = createThemedStyles((colors, scalingMetrics) => {
       elevation: 8,
       shadowOpacity: 0.3,
       shadowRadius: 6,
-      shadowColor: colors.gray800,
+      shadowColor: colors.fixedGray800,
       shadowOffset: {width: scaleSize(6), height: scaleSize(6)},
     },
     searchPlaceholder: {

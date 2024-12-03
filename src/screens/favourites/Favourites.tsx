@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 import BaseContainer from '@components/baseContainer';
 import RecipeCard from '@components/recipeCard';
@@ -57,7 +56,6 @@ const Favourites = () => {
   return (
     <BaseContainer>
       <View style={styles.header}>
-        <Icon name="heart" size={28} color={colors.red500} />
         <Text style={styles.title}>My Favorites</Text>
       </View>
       {isLoading ? (

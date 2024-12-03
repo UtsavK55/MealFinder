@@ -7,6 +7,7 @@ export const useThemeColors = () => {
 
   const colorsLight: Colors = {
     red500: '#FF0000',
+    fixedGray800: '#6a6a6a',
     gray800: '#6a6a6a',
     gray600: '#969696',
     gray500: '#aaaaaa',
@@ -29,6 +30,7 @@ export const useThemeColors = () => {
 
   const colorsDark: Colors = {
     red500: '#FF0000',
+    fixedGray800: '#6a6a6a',
     gray800: '#f7f7f7',
     gray600: '#d1d1d1',
     gray500: '#aaaaaa',
