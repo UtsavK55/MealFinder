@@ -5,7 +5,7 @@ import {addData} from '@network/apiMethods';
 import {getUserDataUrl} from '@network/apiUrl';
 import {getData, storeData} from '@storage';
 
-export const fetchUserbyEmail = createAsyncThunk('', async () => {
+export const fetchUserbyEmail = createAsyncThunk('fetchUserByEmail', async () => {
   const userDetail = await getData(STORAGE_KEYS.USER_DATA);
 
   if (userDetail) {
