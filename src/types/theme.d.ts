@@ -9,6 +9,7 @@ declare global {
 
   interface Colors {
     red500: string;
+    fixedGray800: string;
     gray800: string;
     gray600: string;
     gray500: string;

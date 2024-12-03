@@ -103,3 +103,9 @@ export const emptyRecipeDetail: RecipeDetail = {
     },
   ],
 };
+
+export const emptyMealPlanQuotes = [
+  'Get energized by grabbing a breakfast 🌞✨',
+  'All you need is some Lunch 🍟🍜',
+  'An early dinner can help you sleep better 🍛😴',
+];

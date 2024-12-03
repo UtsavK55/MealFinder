@@ -17,7 +17,10 @@ const FilterSection = ({
   return (
     <>
       <Text style={styles.title}>{title}</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.scrollFilter}>
         {options.map(option => (
           <TouchableOpacity
             key={option}
@@ -51,7 +54,7 @@ const Filters: React.FC<FiltersProps> = ({
   const styles = filterStyles();
   const colors = useThemeColors();
   return (
-    <View style={styles.container}>
+    <>
       <View style={styles.vegetarianContainer}>
         <Text style={styles.vegetarianText}>Pure Vegetarian</Text>
         <Switch
@@ -73,7 +76,7 @@ const Filters: React.FC<FiltersProps> = ({
         selectedOption={selectedDiet}
         onSelectOption={onSelectDiet}
       />
-    </View>
+    </>
   );
 };
 

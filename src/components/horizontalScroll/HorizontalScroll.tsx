@@ -4,6 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 
 import NoDataFound from '@components/noDataFound';
 import RecipeCard from '@components/recipeCard';
+import EmptyMealPlan from '@components/emptyMealPlan';
 import Loader from '@components/loader';
 import {ROUTES} from '@constants';
 
@@ -58,7 +59,11 @@ const HorizontalScroll = ({
           horizontal
           showsHorizontalScrollIndicator={false}
           ListEmptyComponent={
-            <NoDataFound item="recipe" style={styles.noData} />
+            mealId ? (
+              <EmptyMealPlan mealId={mealId} />
+            ) : (
+              <NoDataFound item="recipe" style={styles.noData} />
+            )
           }
           contentContainerStyle={styles.list}
         />

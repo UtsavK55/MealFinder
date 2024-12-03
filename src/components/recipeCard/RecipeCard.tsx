@@ -62,12 +62,7 @@ const RecipeCard = ({
   };
 
   return (
-    <Pressable
-      onPress={onPressCard}
-      style={[
-        styles.cardContainer,
-        large ? styles.largeCard : styles.smallCard,
-      ]}>
+    <Pressable onPress={onPressCard} style={[styles.cardContainer]}>
       <FastImage
         source={{
           uri: item?.image,
@@ -87,12 +82,8 @@ const RecipeCard = ({
         )}
       </Pressable>
       <View style={styles.bottomContainer}>
-        <Text style={styles.title}>{truncateText(item?.title, 30)}</Text>
-        {large && (
-          <Text style={isVegStyles}>
-            {item?.vegetarian ? 'Veg' : 'Non-Veg'}
-          </Text>
-        )}
+        <Text style={styles.title}>{truncateText(item?.title, 20)}</Text>
+        {large && <Icon name="ellipse" size={16} style={isVegStyles} />}
       </View>
     </Pressable>
   );
