@@ -1,16 +1,17 @@
 import {NavigationContainer} from '@react-navigation/native';
+import {Provider} from 'react-redux';
 import Toast from 'react-native-toast-message';
 
 import ErrorBoundary from '@components/errorBoundary';
-import {UserProvider} from '@contexts/UserProvider';
 import {DateProvider} from '@contexts/DateProvider';
 import {DarkThemeProvider} from '@contexts/ThemeProvider';
 import Navigator from '@navigation/Navigator';
+import {store} from '@store';
 
 function App(): React.JSX.Element {
   return (
     <ErrorBoundary>
-      <UserProvider>
+      <Provider store={store}>
         <DarkThemeProvider>
           <DateProvider>
             <NavigationContainer>
@@ -19,7 +20,7 @@ function App(): React.JSX.Element {
             </NavigationContainer>
           </DateProvider>
         </DarkThemeProvider>
-      </UserProvider>
+      </Provider>
     </ErrorBoundary>
   );
 }
