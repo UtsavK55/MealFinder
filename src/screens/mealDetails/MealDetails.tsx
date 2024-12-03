@@ -11,7 +11,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import BaseContainer from '@components/baseContainer';
 import Loader from '@components/loader';
-import {useUserContext} from '@contexts/UserProvider';
 import {
   emptyRecipeDetail,
   mealTypes,
@@ -21,7 +20,9 @@ import {
 } from '@constants';
 import {IMAGES} from '@constants/imageConstants';
 import {formatDate, getValueOrNA, removeHtmlTags, truncateText} from '@helpers';
+import {useAppDispatch, useAppSelector} from '@hooks';
 import {addData, deleteData, fetchData} from '@network/apiMethods';
+import {fetchUserbyEmail} from '@store/Reducers/user';
 import {
   addMealToPlanUrl,
   deleteMealFromPlanUrl,
@@ -196,15 +197,16 @@ const TabContent = ({activeTab, recipeInfo}: TabContentProps) => {
 };
 
 const MealDetails = () => {
-  const {userInfo} = useUserContext();
+  const username = useAppSelector(state => state.userInfo.username);
+  const hash = useAppSelector(state => state.userInfo.hash);
   const styles = mealDetailStyles();
   const colors = useThemeColors();
+  const dispatch = useAppDispatch();
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
   const bottomtabNavigation = useNavigation<BottomTabNavigationType>();
   const route = useRoute<RouteProp<HomeScreenParamList, 'DETAILS_SCREEN'>>();
 
   const {mealId, selectedDate, recipeId, fromScreen} = route?.params;
-  const {username, hash} = userInfo;
   const formattedDate =
     selectedDate && formatDate(new Date(selectedDate * 1000));
 
@@ -282,6 +284,7 @@ const MealDetails = () => {
 
   useEffect(() => {
     setIsLoading(true);
+    dispatch(fetchUserbyEmail());
     getAllData();
     getFavorite();
     setIsLoading(false);
@@ -426,7 +429,7 @@ const MealDetails = () => {
           </Pressable>
         ) : (
           <Pressable onPress={onPressRemove}>
-            <Text style={styles.addButton}>Remove from {mealName}</Text>
+            <Text style={styles.removeButton}>Remove from {mealName}</Text>
           </Pressable>
         )
       ) : (

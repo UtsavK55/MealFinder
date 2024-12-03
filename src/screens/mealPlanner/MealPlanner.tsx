@@ -9,11 +9,12 @@ import CalendarStrip from '@components/calendarStrip';
 import HorizontalScroll from '@components/horizontalScroll';
 import {mealTypes, ROUTES} from '@constants';
 import {useDateContext} from '@contexts/DateProvider';
-import {useUserContext} from '@contexts/UserProvider';
 import {formatDate} from '@helpers';
 import useScalingMetrics from '@hooks/useScalingMetrics';
+import {useAppDispatch, useAppSelector} from '@hooks';
 import {deleteData, fetchData} from '@network/apiMethods';
 import {mealPlanUrl} from '@network/apiUrl';
+import {fetchUserbyEmail} from '@store/Reducers/user';
 import {useThemeColors} from '@theme';
 
 import {mealPlannerStyles} from './styles';
@@ -53,20 +54,22 @@ const MealPlanSection = ({
 };
 
 const MealPlanner = () => {
-  const {userInfo} = useUserContext();
+  const username = useAppSelector(state => state.userInfo.username);
+  const hash = useAppSelector(state => state.userInfo.hash);
   const {selectedDate, setSelectedDate} = useDateContext();
   const styles = mealPlannerStyles();
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
+  const dispatch = useAppDispatch();
 
   const [mealPlan, setMealPlan] = useState<AllMealPlans>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const {username, hash} = userInfo;
   const formattedDate = formatDate(selectedDate);
   const timestamp = Math.floor(selectedDate.getTime() / 1000);
 
   const getAllData = async () => {
     setIsLoading(true);
+    dispatch(fetchUserbyEmail());
     const mealPlanData = await fetchData(
       mealPlanUrl(username, hash, formattedDate),
     );
