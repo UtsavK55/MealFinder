@@ -20,9 +20,8 @@ import {
 } from '@constants';
 import {IMAGES} from '@constants/imageConstants';
 import {formatDate, getValueOrNA, removeHtmlTags, truncateText} from '@helpers';
-import {useAppDispatch, useAppSelector} from '@hooks';
+import {useAppSelector} from '@hooks';
 import {addData, deleteData, fetchData} from '@network/apiMethods';
-import {fetchUserbyEmail} from '@store/Reducers/user';
 import {
   addMealToPlanUrl,
   deleteMealFromPlanUrl,
@@ -201,7 +200,6 @@ const MealDetails = () => {
   const hash = useAppSelector(state => state.userInfo.hash);
   const styles = mealDetailStyles();
   const colors = useThemeColors();
-  const dispatch = useAppDispatch();
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
   const bottomtabNavigation = useNavigation<BottomTabNavigationType>();
   const route = useRoute<RouteProp<HomeScreenParamList, 'DETAILS_SCREEN'>>();
@@ -284,7 +282,6 @@ const MealDetails = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    dispatch(fetchUserbyEmail());
     getAllData();
     getFavorite();
     setIsLoading(false);

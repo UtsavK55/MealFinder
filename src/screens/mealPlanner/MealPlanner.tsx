@@ -11,10 +11,9 @@ import {mealTypes, ROUTES} from '@constants';
 import {useDateContext} from '@contexts/DateProvider';
 import {formatDate} from '@helpers';
 import useScalingMetrics from '@hooks/useScalingMetrics';
-import {useAppDispatch, useAppSelector} from '@hooks';
+import {useAppSelector} from '@hooks';
 import {deleteData, fetchData} from '@network/apiMethods';
 import {mealPlanUrl} from '@network/apiUrl';
-import {fetchUserbyEmail} from '@store/Reducers/user';
 import {useThemeColors} from '@theme';
 
 import {mealPlannerStyles} from './styles';
@@ -59,7 +58,6 @@ const MealPlanner = () => {
   const {selectedDate, setSelectedDate} = useDateContext();
   const styles = mealPlannerStyles();
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
-  const dispatch = useAppDispatch();
 
   const [mealPlan, setMealPlan] = useState<AllMealPlans>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -69,7 +67,6 @@ const MealPlanner = () => {
 
   const getAllData = async () => {
     setIsLoading(true);
-    dispatch(fetchUserbyEmail());
     const mealPlanData = await fetchData(
       mealPlanUrl(username, hash, formattedDate),
     );
