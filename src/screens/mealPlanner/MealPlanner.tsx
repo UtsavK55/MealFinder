@@ -11,9 +11,10 @@ import {mealTypes, ROUTES} from '@constants';
 import {useDateContext} from '@contexts/DateProvider';
 import {formatDate} from '@helpers';
 import useScalingMetrics from '@hooks/useScalingMetrics';
-import {useAppSelector} from '@hooks';
+import {useAppDispatch, useAppSelector} from '@store';
 import {deleteData, fetchData} from '@network/apiMethods';
 import {mealPlanUrl} from '@network/apiUrl';
+import {fetchMealPlan} from '@store/reducers/mealPlan';
 import {useThemeColors} from '@theme';
 
 import {mealPlannerStyles} from './styles';
@@ -53,30 +54,22 @@ const MealPlanSection = ({
 };
 
 const MealPlanner = () => {
-  const username = useAppSelector(state => state.userInfo.username);
-  const hash = useAppSelector(state => state.userInfo.hash);
+  const userData = useAppSelector(({userInfo}) => userInfo.userData);
+  const mealPlan = useAppSelector(({mealPlan}) => mealPlan.data);
+  const dispatch = useAppDispatch();
   const {selectedDate, setSelectedDate} = useDateContext();
   const styles = mealPlannerStyles();
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
 
-  const [mealPlan, setMealPlan] = useState<AllMealPlans>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const {username, hash} = userData as UserDetail;
   const formattedDate = formatDate(selectedDate);
   const timestamp = Math.floor(selectedDate.getTime() / 1000);
 
   const getAllData = async () => {
     setIsLoading(true);
-    const mealPlanData = await fetchData(
-      mealPlanUrl(username, hash, formattedDate),
-    );
-
-    const mealPlanDetail =
-      mealPlanData?.items?.map(({slot, value}: MealPlanDetail) => ({
-        slot,
-        value,
-      })) || [];
-    setMealPlan(mealPlanDetail);
+    await dispatch(fetchMealPlan({username, hash, formattedDate}));
     setIsLoading(false);
   };
 
@@ -140,8 +133,10 @@ const MealPlanner = () => {
           </Pressable>
           {mealTypes.map(({mealId, mealName}) => {
             const mealData = mealPlan
-              .filter(({slot}) => slot === mealId)
-              .map(({value}) => value);
+              ? mealPlan
+                  .filter(({slot}) => slot === mealId)
+                  .map(({value}) => value)
+              : [];
 
             return (
               <MealPlanSection

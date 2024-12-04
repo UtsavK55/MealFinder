@@ -20,7 +20,7 @@ import {
 } from '@constants';
 import {IMAGES} from '@constants/imageConstants';
 import {formatDate, getValueOrNA, removeHtmlTags, truncateText} from '@helpers';
-import {useAppSelector} from '@hooks';
+import {useAppSelector} from '@store';
 import {addData, deleteData, fetchData} from '@network/apiMethods';
 import {
   addMealToPlanUrl,
@@ -196,8 +196,7 @@ const TabContent = ({activeTab, recipeInfo}: TabContentProps) => {
 };
 
 const MealDetails = () => {
-  const username = useAppSelector(state => state.userInfo.username);
-  const hash = useAppSelector(state => state.userInfo.hash);
+  const userData = useAppSelector(({userInfo}) => userInfo.userData);
   const styles = mealDetailStyles();
   const colors = useThemeColors();
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
@@ -205,6 +204,7 @@ const MealDetails = () => {
   const route = useRoute<RouteProp<HomeScreenParamList, 'DETAILS_SCREEN'>>();
 
   const {mealId, selectedDate, recipeId, fromScreen} = route?.params;
+  const {username, hash} = userData as UserDetail;
   const formattedDate =
     selectedDate && formatDate(new Date(selectedDate * 1000));
 

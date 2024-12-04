@@ -16,7 +16,6 @@ export const fetchRandomRecipes = createAsyncThunk(
   async ({url, type}: {url: string; type: string}) => {
     try {
       const response = await _get(url);
-      console.log(response);
 
       return {
         type,

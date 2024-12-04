@@ -8,8 +8,10 @@ import Filters from '@components/filters';
 import HorizontalScroll from '@components/horizontalScroll';
 import {randomRecipeTypes, ROUTES} from '@constants';
 import {toFistLetterUpperCase} from '@helpers';
-import {fetchData} from '@network/apiMethods';
 import {randomRecipeUrl} from '@network/apiUrl';
+import {useAppDispatch, useAppSelector} from '@store';
+import {fetchRandomRecipes} from '@store/reducers/recipe';
+import {fetchUserbyEmail} from '@store/reducers/user';
 import {useThemeColors} from '@theme';
 
 import {homeStyles} from './styles';
@@ -90,9 +92,11 @@ const recipeListSection = ({
 const Home = () => {
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
 
-  const [appetizers, setAppetizers] = useState<AllRecipeCards>([]);
-  const [mainCourse, setMainCourse] = useState<AllRecipeCards>([]);
-  const [desserts, setDesserts] = useState<AllRecipeCards>([]);
+  const appetizers = useAppSelector(state => state.recipes.appetizers);
+  const mainCourse = useAppSelector(state => state.recipes.mainCourse);
+  const desserts = useAppSelector(state => state.recipes.desserts);
+  const dispatch = useAppDispatch();
+
   const [selectedCuisine, setSelectedCuisine] = useState<string | null>(null);
   const [selectedDiet, setSelectedDiet] = useState<string | null>(null);
   const [isVegetarian, setIsVegetarian] = useState<boolean>(false);
@@ -100,7 +104,8 @@ const Home = () => {
 
   const getAllData = async () => {
     setIsLoading(true);
-    randomRecipeTypes.map(async type => {
+    dispatch(fetchUserbyEmail());
+    const fetchRecipes = randomRecipeTypes.map(async type => {
       const url = constructUrl(
         randomRecipeUrl,
         isVegetarian,
@@ -108,26 +113,12 @@ const Home = () => {
         selectedCuisine,
         type,
       );
-      const data = await fetchData(url);
 
-      const recipeData = data?.recipes?.map(
-        ({id, title, image, vegetarian}: RecipeCard) => ({
-          id,
-          title,
-          image,
-          vegetarian,
-        }),
-      );
-
-      if (type === randomRecipeTypes[0]) {
-        setAppetizers(recipeData);
-      } else if (type === randomRecipeTypes[1]) {
-        setMainCourse(recipeData);
-      } else {
-        setDesserts(recipeData);
-      }
-      setIsLoading(false);
+      await dispatch(fetchRandomRecipes({url, type}));
     });
+
+    await Promise.all(fetchRecipes);
+    setIsLoading(false);
   };
 
   useEffect(() => {
