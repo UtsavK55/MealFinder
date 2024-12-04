@@ -91,11 +91,10 @@ const recipeListSection = ({
 
 const Home = () => {
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
-
-  const appetizers = useAppSelector(state => state.recipes.appetizers);
-  const mainCourse = useAppSelector(state => state.recipes.mainCourse);
-  const desserts = useAppSelector(state => state.recipes.desserts);
+  const randomRecipes = useAppSelector(state => state.recipes);
   const dispatch = useAppDispatch();
+
+  const {appetizers, mainCourse, desserts} = randomRecipes;
 
   const [selectedCuisine, setSelectedCuisine] = useState<string | null>(null);
   const [selectedDiet, setSelectedDiet] = useState<string | null>(null);
