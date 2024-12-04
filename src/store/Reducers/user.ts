@@ -1,35 +1,39 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 
-import {STORAGE_KEYS} from '@constants';
+import {STORAGE_KEYS, storeConstants} from '@constants';
 import {addData} from '@network/apiMethods';
 import {getUserDataUrl} from '@network/apiUrl';
 import {getData, storeData} from '@storage';
 
-export const fetchUserbyEmail = createAsyncThunk('fetchUserByEmail', async () => {
-  const userDetail = await getData(STORAGE_KEYS.USER_DATA);
+const {name, thunk} = storeConstants.user;
 
-  if (userDetail) {
-    return userDetail;
-  } else {
-    const response = await addData(getUserDataUrl);
-    return response?.data;
-  }
-});
+export const fetchUserbyEmail = createAsyncThunk(
+  thunk.fetchUserbyEmail,
+  async () => {
+    const userDetail = await getData(STORAGE_KEYS.USER_DATA);
 
-const initialState = {hash: '', username: ''};
+    if (userDetail) {
+      return userDetail;
+    } else {
+      const response = await addData(getUserDataUrl);
+      return response?.data;
+    }
+  },
+);
 
 export const userSlice = createSlice({
-  name: 'user',
-  initialState,
+  name,
+  initialState: {
+    userData: {},
+  },
   reducers: {},
   extraReducers: builder => {
     builder.addCase(fetchUserbyEmail.fulfilled, (state, action) => {
-      state.hash = action.payload?.hash;
-      state.username = action.payload?.username;
-      storeData(state, STORAGE_KEYS.USER_DATA);
+      state.userData = action.payload;
+      storeData(state.userData, STORAGE_KEYS.USER_DATA);
     });
     builder.addCase(fetchUserbyEmail.rejected, (state, action) => {
-      state = initialState;
+      state.userData = {};
     });
   },
 });

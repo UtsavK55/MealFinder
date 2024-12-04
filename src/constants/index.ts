@@ -109,3 +109,21 @@ export const emptyMealPlanQuotes = [
   'All you need is some Lunch 🍟🍜',
   'An early dinner can help you sleep better 🍛😴',
 ];
+
+export const storeConstants = {
+  user: {
+    name: 'user',
+    thunk: {
+      fetchUserbyEmail: 'fetchUserbyEmail',
+    },
+  },
+  recipe: {
+    name: 'recipe',
+    thunk: {
+      fetchRandomRecipes: 'fetchRandomRecipes',
+    },
+  },
+  loadingStatus: {
+    name: 'loadingStatus',
+  },
+};
