@@ -7,7 +7,7 @@ export const mealDetailStyles = createThemedStyles((colors, scalingMetrics) => {
   return StyleSheet.create({
     image: {
       width: wp(100),
-      height: wp(55),
+      height: wp(65),
     },
     icon: {
       padding: scaleSize(8),
@@ -19,7 +19,7 @@ export const mealDetailStyles = createThemedStyles((colors, scalingMetrics) => {
       borderColor: colors.gray800,
       shadowOpacity: 1,
       shadowRadius: scaleSize(12),
-      shadowColor: colors.black,
+      shadowColor: colors.fixedBlack,
       zIndex: 1,
     },
     backIcon: {
@@ -76,12 +76,13 @@ export const mealDetailStyles = createThemedStyles((colors, scalingMetrics) => {
       flexDirection: 'row',
     },
     detailLabel: {
-      fontWeight: '600',
+      fontWeight: 'bold',
     },
     ingredient: {
       fontSize: moderateScale(14),
       color: colors.gray800,
       marginBottom: scaleSize(4),
+      fontWeight: '500',
     },
     instruction: {
       fontSize: moderateScale(14),
@@ -109,6 +110,15 @@ export const mealDetailStyles = createThemedStyles((colors, scalingMetrics) => {
       gap: scaleSize(4),
       marginVertical: scaleSize(2),
       paddingHorizontal: scaleSize(10),
+    },
+    removeButton: {
+      backgroundColor: colors.red500,
+      color: colors.white,
+      fontSize: moderateScale(16),
+      textAlign: 'center',
+      paddingVertical: scaleSize(10),
+      fontWeight: '600',
+      opacity: 0.75,
     },
   });
 });

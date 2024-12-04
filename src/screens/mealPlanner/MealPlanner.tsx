@@ -9,11 +9,12 @@ import CalendarStrip from '@components/calendarStrip';
 import HorizontalScroll from '@components/horizontalScroll';
 import {mealTypes, ROUTES} from '@constants';
 import {useDateContext} from '@contexts/DateProvider';
-import {useUserContext} from '@contexts/UserProvider';
 import {formatDate} from '@helpers';
 import useScalingMetrics from '@hooks/useScalingMetrics';
+import {useAppDispatch, useAppSelector} from '@store';
 import {deleteData, fetchData} from '@network/apiMethods';
 import {mealPlanUrl} from '@network/apiUrl';
+import {fetchMealPlan} from '@store/reducers/mealPlan';
 import {useThemeColors} from '@theme';
 
 import {mealPlannerStyles} from './styles';
@@ -53,30 +54,22 @@ const MealPlanSection = ({
 };
 
 const MealPlanner = () => {
-  const {userInfo} = useUserContext();
+  const userData = useAppSelector(({userInfo}) => userInfo.userData);
+  const mealPlan = useAppSelector(({mealPlan}) => mealPlan.data);
+  const dispatch = useAppDispatch();
   const {selectedDate, setSelectedDate} = useDateContext();
   const styles = mealPlannerStyles();
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
 
-  const [mealPlan, setMealPlan] = useState<AllMealPlans>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const {username, hash} = userInfo;
+  const {username, hash} = userData as UserDetail;
   const formattedDate = formatDate(selectedDate);
   const timestamp = Math.floor(selectedDate.getTime() / 1000);
 
   const getAllData = async () => {
     setIsLoading(true);
-    const mealPlanData = await fetchData(
-      mealPlanUrl(username, hash, formattedDate),
-    );
-
-    const mealPlanDetail =
-      mealPlanData?.items?.map(({slot, value}: MealPlanDetail) => ({
-        slot,
-        value,
-      })) || [];
-    setMealPlan(mealPlanDetail);
+    await dispatch(fetchMealPlan({username, hash, formattedDate}));
     setIsLoading(false);
   };
 
@@ -140,8 +133,10 @@ const MealPlanner = () => {
           </Pressable>
           {mealTypes.map(({mealId, mealName}) => {
             const mealData = mealPlan
-              .filter(({slot}) => slot === mealId)
-              .map(({value}) => value);
+              ? mealPlan
+                  .filter(({slot}) => slot === mealId)
+                  .map(({value}) => value)
+              : [];
 
             return (
               <MealPlanSection

@@ -11,7 +11,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import BaseContainer from '@components/baseContainer';
 import Loader from '@components/loader';
-import {useUserContext} from '@contexts/UserProvider';
 import {
   emptyRecipeDetail,
   mealTypes,
@@ -21,6 +20,7 @@ import {
 } from '@constants';
 import {IMAGES} from '@constants/imageConstants';
 import {formatDate, getValueOrNA, removeHtmlTags, truncateText} from '@helpers';
+import {useAppSelector} from '@store';
 import {addData, deleteData, fetchData} from '@network/apiMethods';
 import {
   addMealToPlanUrl,
@@ -196,7 +196,7 @@ const TabContent = ({activeTab, recipeInfo}: TabContentProps) => {
 };
 
 const MealDetails = () => {
-  const {userInfo} = useUserContext();
+  const userData = useAppSelector(({userInfo}) => userInfo.userData);
   const styles = mealDetailStyles();
   const colors = useThemeColors();
   const homeNavigation = useNavigation<HomeScreenNavigationType>();
@@ -204,7 +204,7 @@ const MealDetails = () => {
   const route = useRoute<RouteProp<HomeScreenParamList, 'DETAILS_SCREEN'>>();
 
   const {mealId, selectedDate, recipeId, fromScreen} = route?.params;
-  const {username, hash} = userInfo;
+  const {username, hash} = userData as UserDetail;
   const formattedDate =
     selectedDate && formatDate(new Date(selectedDate * 1000));
 
@@ -426,7 +426,7 @@ const MealDetails = () => {
           </Pressable>
         ) : (
           <Pressable onPress={onPressRemove}>
-            <Text style={styles.addButton}>Remove from {mealName}</Text>
+            <Text style={styles.removeButton}>Remove from {mealName}</Text>
           </Pressable>
         )
       ) : (
